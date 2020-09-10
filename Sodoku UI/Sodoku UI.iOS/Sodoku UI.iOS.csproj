@@ -142,4 +142,7 @@
       <Name>Sodoku UI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\game.png" />
+  </ItemGroup>
 </Project>
