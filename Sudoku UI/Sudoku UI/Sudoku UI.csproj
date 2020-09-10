@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Sudoku Lib\Sudoku Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Views\Sudoku.xaml.cs">
       <DependentUpon>Sudoku.xaml</DependentUpon>
     </Compile>

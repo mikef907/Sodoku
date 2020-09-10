@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sudoku_UI.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Sudoku_UI.Views
         public Sudoku()
         {
             InitializeComponent();
+            BindingContext = new SudokuViewModel();
         }
     }
 }
