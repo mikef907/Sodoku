@@ -8,7 +8,8 @@
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
             <Label Text="Welcome to Sudoku!"/>
-            <Label Text="{Binding BoardDisplay, Mode=TwoWay}" FontSize="Large" />
+            <Grid x:Name="grid"></Grid>
+            <Label Text="{Binding BoardDisplay}"></Label>
             <Button Text="Start Game" Command="{Binding StartCommand}"></Button>
         </StackLayout>
     </ContentPage.Content>

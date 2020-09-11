@@ -16,7 +16,7 @@ namespace Sudoku_UI.Views
         public Sudoku()
         {
             InitializeComponent();
-            BindingContext = new SudokuViewModel();
+            BindingContext = new SudokuViewModel(this.grid);
         }
     }
 }
