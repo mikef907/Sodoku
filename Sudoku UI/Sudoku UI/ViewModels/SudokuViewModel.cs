@@ -113,6 +113,7 @@ namespace Sudoku_UI.ViewModels
                 if (sudoku.Equals(sudoku.PuzzleBoard))
                 {
                     await page.DisplayAlert("Complete!", "We're done here!", "PEACE!");
+                    await ShowBoard();
                 }
             }
         }
