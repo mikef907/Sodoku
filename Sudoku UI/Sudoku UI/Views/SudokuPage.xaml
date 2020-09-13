@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Sudoku_UI.Views.Sudoku"
+             x:Class="Sudoku_UI.Views.SudokuPage"
              Title="Sudoku">
     <ContentPage.Content>
         <StackLayout 
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
             <Label Text="Welcome to Sudoku!"/>
-            <Grid x:Name="grid"></Grid>
+            <Grid x:Name="grid" x:FieldModifier="public"></Grid>
             <Label Text="{Binding BoardDisplay}"></Label>
             <Button Text="Start Game" Command="{Binding StartCommand}"></Button>
         </StackLayout>

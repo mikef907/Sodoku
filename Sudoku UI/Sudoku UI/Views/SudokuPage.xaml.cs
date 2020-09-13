@@ -11,12 +11,12 @@ using Xamarin.Forms.Xaml;
 namespace Sudoku_UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Sudoku : ContentPage
+    public partial class SudokuPage : ContentPage
     {
-        public Sudoku()
+        public SudokuPage()
         {
             InitializeComponent();
-            BindingContext = new SudokuViewModel(this.grid);
+            BindingContext = new SudokuViewModel(this);
         }
     }
 }

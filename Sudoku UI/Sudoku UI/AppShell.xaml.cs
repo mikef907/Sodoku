@@ -13,7 +13,7 @@ namespace Sudoku_UI
             InitializeComponent();
             Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
             Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
-            Routing.RegisterRoute(nameof(Sudoku), typeof(Sudoku));
+            Routing.RegisterRoute(nameof(SudokuPage), typeof(SudokuPage));
         }
 
     }

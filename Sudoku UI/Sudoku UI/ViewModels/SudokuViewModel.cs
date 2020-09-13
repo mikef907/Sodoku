@@ -1,4 +1,5 @@
 ﻿using Sudoku_Lib;
+using Sudoku_UI.Views;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -11,15 +12,17 @@ namespace Sudoku_UI.ViewModels
         public bool showLabel { get => sudoku != null; }
         private string boardDisplay;
         private Grid sudokuGrid;
+        private SudokuPage page;
 
         public string BoardDisplay
         {
             get => boardDisplay;
             set => SetProperty(ref boardDisplay, value);
         }
-        public SudokuViewModel(Grid sudokuGrid)
+        public SudokuViewModel(SudokuPage sudokuPage)
         {
-            this.sudokuGrid = sudokuGrid;
+            this.sudokuGrid = sudokuPage.grid;
+            page = sudokuPage;
 
             StartCommand = new Command(async() =>
             {
@@ -59,7 +62,7 @@ namespace Sudoku_UI.ViewModels
                         HorizontalOptions = LayoutOptions.Start
                     };
 
-                    var label = new Entry
+                    var entry = new Entry
                     {
                         Text = sudoku.PuzzleBoard[i, j].ToString(),
                         IsReadOnly = sudoku.PuzzleBoard[i, j].HasValue,
@@ -69,15 +72,49 @@ namespace Sudoku_UI.ViewModels
                         VerticalOptions = LayoutOptions.Center,
                         Keyboard = Keyboard.Numeric,
                         MaxLength = 1,
+                        AnchorX = i,
+                        AnchorY = j
                     };
 
+
+                    entry.TextChanged += Entry_TextChanged;
+
                     stack.Children.Add(guesses);
-                    stack.Children.Add(label);
+                    stack.Children.Add(entry);
 
                     sudokuGrid.Children.Add(stack, j, i);
                 }
             }
             BoardDisplay = "";
+        }
+
+        private async void Entry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var element = sender as Entry;
+            await InputValue(e.NewTextValue, (int)element.AnchorX, (int)element.AnchorY);
+            element.Unfocus();
+        }
+
+        private async Task InputValue(string textValue, int row, int col)
+        {
+            int value;
+
+            if (string.IsNullOrEmpty(textValue))
+            {
+                sudoku.PuzzleBoard[row, col] = null;
+            }
+            else if (int.TryParse(textValue, out value))
+            {
+                sudoku.PuzzleBoard[row, col] = value;
+            }
+
+            if (sudoku.PuzzleBoard.IsComplete())
+            {
+                if (sudoku.Equals(sudoku.PuzzleBoard))
+                {
+                    await page.DisplayAlert("Complete!", "We're done here!", "PEACE!");
+                }
+            }
         }
     }
 }

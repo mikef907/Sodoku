@@ -91,6 +91,15 @@ namespace Sudoku_Lib
             });
         }
 
+        public bool Equals(int?[,] gameboard)
+        {
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    if (this.GameBoard[i, j] != gameboard[i, j])
+                        return false;
+            return true;
+        }
+
         private void InitPuzzleBoard()
         {
             var random = new Random();
