@@ -105,8 +105,7 @@ namespace Sudoku_Lib
             var random = new Random();
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    //PuzzleBoard[i, j] = GameBoard[i, j];
-                    PuzzleBoard[i, j] = random.Next() % 10 == 0 ? null :  GameBoard[i, j];
+                    PuzzleBoard[i, j] = random.Next() % 3 == 0 ? null :  GameBoard[i, j];
         }
 
         public int EmptyPuzzleBoardCellsCount()

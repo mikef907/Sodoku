@@ -26,7 +26,6 @@ namespace Sudoku_UI.ViewModels
 
             StartCommand = new Command(async() =>
             {
-                sudoku = new Sudoku();
                 await ShowBoard();
             });
         }
@@ -35,41 +34,38 @@ namespace Sudoku_UI.ViewModels
 
         public async Task ShowBoard()
         {
-            sudokuGrid.Children.Clear();
             BoardDisplay = "Working...";
-
+            sudoku = new Sudoku();
+            sudokuGrid.Children.Clear();
             await sudoku.Init();
 
-            //string _boardDisplay = "";
 
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    var stack = new FlexLayout()
+                    bool isCenter = false;
+                    if (j % 3 == 1 && i % 3 == 1)
+                        isCenter = true;
+
+                    var stack = new StackLayout()
                     {
-                        BackgroundColor = new Color(0, 0, 0.5, 0.1),
-                        Direction = FlexDirection.Column,
-                        Wrap = FlexWrap.Wrap
+                        BackgroundColor = isCenter ? new Color(0, 0, 0.5, 0.2) : new Color(0, 0, 0.5, 0.1),
+                        Orientation = StackOrientation.Horizontal
                     };
 
                     var guesses = new Label 
                     { 
-                        Text = string.Join(" ", sudoku.PossibleGuesses(i, j)), 
-                        FontSize = 10,
-                        IsVisible = !sudoku.PuzzleBoard[i, j].HasValue,
-                        VerticalOptions = LayoutOptions.StartAndExpand,
-                        HorizontalOptions = LayoutOptions.Start
+                        Text = sudoku.PuzzleBoard[i, j].HasValue ? null : string.Join(" ", sudoku.PossibleGuesses(i, j)), 
+                        FontSize = 10
                     };
+
 
                     var entry = new Entry
                     {
                         Text = sudoku.PuzzleBoard[i, j].ToString(),
                         IsReadOnly = sudoku.PuzzleBoard[i, j].HasValue,
-                        FontSize = 18,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        VerticalTextAlignment = TextAlignment.Center,
-                        VerticalOptions = LayoutOptions.Center,
+                        FontSize = 16,
                         Keyboard = Keyboard.Numeric,
                         MaxLength = 1,
                         AnchorX = i,
