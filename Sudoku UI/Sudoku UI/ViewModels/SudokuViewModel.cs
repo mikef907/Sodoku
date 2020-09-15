@@ -44,13 +44,14 @@ namespace Sudoku_UI.ViewModels
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    bool isCenter = false;
-                    if (j % 3 == 1 && i % 3 == 1)
-                        isCenter = true;
+                    var evenRow = i / 3 == 0 || i / 3 == 2;
+                    var evenCol = j / 3 == 0 || j / 3 == 2 ;
+                    var center = i / 3 == 1 && j / 3 == 1;
+                    var accent = (evenRow && evenCol) || center ? 0.1 : 0.2;
 
                     var stack = new StackLayout()
                     {
-                        BackgroundColor = isCenter ? new Color(0, 0, 0.5, 0.2) : new Color(0, 0, 0.5, 0.1),
+                        BackgroundColor = new Color(0, 0, 0.5, accent),
                         Orientation = StackOrientation.Horizontal
                     };
 
