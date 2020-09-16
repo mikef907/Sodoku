@@ -1,41 +1,64 @@
 ﻿using Sudoku_Lib;
 using Sudoku_UI.Views;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Sudoku_UI.ViewModels
 {
+    public class InverseBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+    }
     public class SudokuViewModel : BaseViewModel
     {
         Sudoku sudoku = null;
         public bool showLabel { get => sudoku != null; }
-        private string boardDisplay;
+        private bool isInit;
         private Grid sudokuGrid;
         private SudokuPage page;
 
-        public string BoardDisplay
+        public bool IsInit
         {
-            get => boardDisplay;
-            set => SetProperty(ref boardDisplay, value);
+            get => isInit;
+            set => SetProperty(ref isInit, value);
         }
         public SudokuViewModel(SudokuPage sudokuPage)
         {
+            isInit = false;
+            sudoku = new Sudoku();
             this.sudokuGrid = sudokuPage.grid;
             page = sudokuPage;
 
-            StartCommand = new Command(async() =>
+            StartCommand = new Command(async () => await ShowBoard());
+
+            StartOverCommand = new Command(async() =>
             {
-                await ShowBoard();
+                if (await page.DisplayAlert("Giving Up?", "Do you want to start over?", "Yes", "No"))
+                {
+                    sudoku = new Sudoku();
+                    await ShowBoard();
+                }
             });
         }
+
+        public Command StartOverCommand { get; }
 
         public Command StartCommand { get; }
 
         public async Task ShowBoard()
         {
-            BoardDisplay = "Working...";
-            sudoku = new Sudoku();
+            IsBusy = true;
             sudokuGrid.Children.Clear();
             await sudoku.Init();
 
@@ -82,7 +105,8 @@ namespace Sudoku_UI.ViewModels
                     sudokuGrid.Children.Add(stack, j, i);
                 }
             }
-            BoardDisplay = "";
+            IsInit = sudoku.IsInit;
+            IsBusy = false;
         }
 
         private async void Entry_TextChanged(object sender, TextChangedEventArgs e)

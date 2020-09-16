@@ -1,16 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:Sudoku_UI.ViewModels"
              x:Class="Sudoku_UI.Views.SudokuPage"
              Title="Sudoku">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="inverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout 
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
-            <Label Text="Welcome to Sudoku!"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
             <Grid x:Name="grid" x:FieldModifier="public"></Grid>
-            <Label Text="{Binding BoardDisplay}"></Label>
-            <Button Text="Start Game" Command="{Binding StartCommand}"></Button>
+            <StackLayout IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
+                <Button Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>
+                <Button Text="Start Over" Command="{Binding StartOverCommand}" IsVisible="{Binding IsInit}"></Button>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

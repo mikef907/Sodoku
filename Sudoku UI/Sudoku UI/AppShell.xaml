@@ -31,8 +31,7 @@
 
     <TabBar>
         <ShellContent Title="About" Icon="tab_about.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
-        <ShellContent Title="Browse" Icon="tab_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}" />
-        <ShellContent Title="Sudoku" Icon="game.png" ContentTemplate="{DataTemplate local:SudokuPage}" />
+        <ShellContent Title="Play Sudoku" Icon="game.png" Route="SudokuPage" ContentTemplate="{DataTemplate local:SudokuPage}" />
     </TabBar>
 
     <!--

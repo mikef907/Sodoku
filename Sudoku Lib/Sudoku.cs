@@ -11,8 +11,11 @@ namespace Sudoku_Lib
         private int?[,] GameBoard { get; set; }
         public int?[,] PuzzleBoard { get; private set; }
 
+        public bool IsInit { get; private set; }
+
         public Sudoku()
         {
+            IsInit = false;
             GameBoard = new int?[9, 9];
             PuzzleBoard = new int?[9, 9];
         }
@@ -77,6 +80,7 @@ namespace Sudoku_Lib
 
                     }
                 InitPuzzleBoard();
+                IsInit = true;
 
 #if DEBUG
                 Debug.WriteLine($"Iterations:{iterations}");

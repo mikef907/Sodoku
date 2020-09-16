@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sudoku_Lib;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -82,7 +83,7 @@ namespace Sudoku_Lib.Tests
         [InlineData(3, 4)]
         [InlineData(4, 3)]
         [InlineData(4, 4)]
-        [InlineData(7,7)]
+        [InlineData(7, 7)]
         public void ShouldThrowErrorIfNumberAppearsMoreThanOnceInSquare(int row, int col)
         {
             sudoku.PuzzleBoard[row, col] = 1;
@@ -94,7 +95,7 @@ namespace Sudoku_Lib.Tests
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                { 
+                {
                     sudoku.PuzzleBoard[i, j] = null;
                     Assert.Null(sudoku.PuzzleBoard[i, j]);
                 }
@@ -129,7 +130,7 @@ namespace Sudoku_Lib.Tests
                 if (c > 9)
                     c = o++;
             }
-                    
+
 
             Assert.True(sudoku.PuzzleBoard.IsComplete());
         }
@@ -138,7 +139,7 @@ namespace Sudoku_Lib.Tests
         public async Task CanGenerateItsOwnPuzzle()
         {
             await sudoku.Init();
-            Assert.True(sudoku.GameboardIsInit());   
+            Assert.True(sudoku.GameboardIsInit());
         }
 
         [Fact()]
@@ -171,6 +172,13 @@ namespace Sudoku_Lib.Tests
                     }
                 }
 
+        }
+
+        [Fact()]
+        public async Task EqualsShouldBeFalseOnInit()
+        {
+            await sudoku.Init();
+            Assert.False(sudoku.Equals(sudoku.PuzzleBoard));
         }
     }
 }
