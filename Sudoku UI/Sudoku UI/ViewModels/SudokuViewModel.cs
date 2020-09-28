@@ -24,15 +24,24 @@ namespace Sudoku_UI.ViewModels
     {
         Sudoku sudoku = null;
         public bool showLabel { get => sudoku != null; }
+        private TimeSpan span;
         private bool isInit;
         private Grid sudokuGrid;
         private SudokuPage page;
+
 
         public bool IsInit
         {
             get => isInit;
             set => SetProperty(ref isInit, value);
         }
+
+        public TimeSpan Timer
+        {
+            get => span;
+            set => SetProperty(ref span, value);
+        }
+
         public SudokuViewModel(SudokuPage sudokuPage)
         {
             isInit = false;
@@ -50,6 +59,7 @@ namespace Sudoku_UI.ViewModels
                     await ShowBoard();
                 }
             });
+
         }
 
         public Command StartOverCommand { get; }
@@ -106,6 +116,14 @@ namespace Sudoku_UI.ViewModels
                 }
             }
             IsInit = sudoku.IsInit;
+
+            Timer = TimeSpan.FromSeconds(0);
+            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
+                Timer = Timer.Add(TimeSpan.FromSeconds(1));
+                return true;
+            });
+
             IsBusy = false;
         }
 

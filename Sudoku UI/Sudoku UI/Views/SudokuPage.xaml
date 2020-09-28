@@ -14,6 +14,7 @@
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
             <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
+            <Label Text="{Binding Timer}" IsVisible="{Binding IsInit}" HorizontalTextAlignment="Center"></Label>
             <Grid x:Name="grid" x:FieldModifier="public"></Grid>
             <StackLayout IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
                 <Button Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>
