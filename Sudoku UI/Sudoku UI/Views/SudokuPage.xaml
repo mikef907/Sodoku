@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:local="clr-namespace:Sudoku_UI.ViewModels"
+             xmlns:local="clr-namespace:Sudoku_UI.Models"
              x:Class="Sudoku_UI.Views.SudokuPage"
              Title="Sudoku">
     <ContentPage.Resources>
@@ -15,6 +15,7 @@
                 HorizontalOptions="CenterAndExpand" >
             <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
             <Label Text="{Binding Timer}" IsVisible="{Binding IsInit}" HorizontalTextAlignment="Center"></Label>
+            <Label Text="{Binding Seed}" IsVisible="{Binding IsInit}" HorizontalTextAlignment="Center"></Label>
             <Grid x:Name="grid" x:FieldModifier="public"></Grid>
             <StackLayout IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
                 <Button Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>

@@ -1,25 +1,11 @@
 ﻿using Sudoku_Lib;
 using Sudoku_UI.Views;
 using System;
-using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Sudoku_UI.ViewModels
 {
-    public class InverseBoolConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return !(bool)value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return !(bool)value;
-        }
-    }
     public class SudokuViewModel : BaseViewModel
     {
         Sudoku sudoku = null;
@@ -28,7 +14,7 @@ namespace Sudoku_UI.ViewModels
         private bool isInit;
         private Grid sudokuGrid;
         private SudokuPage page;
-
+        private int seed;
 
         public bool IsInit
         {
@@ -40,6 +26,12 @@ namespace Sudoku_UI.ViewModels
         {
             get => span;
             set => SetProperty(ref span, value);
+        }
+
+        public int Seed
+        {
+            get => seed;
+            set => SetProperty(ref seed, value);
         }
 
         public SudokuViewModel(SudokuPage sudokuPage)
@@ -115,6 +107,7 @@ namespace Sudoku_UI.ViewModels
                     sudokuGrid.Children.Add(stack, j, i);
                 }
             }
+            Seed = sudoku.Seed;
             IsInit = sudoku.IsInit;
 
             Timer = TimeSpan.FromSeconds(0);

@@ -9,9 +9,14 @@ namespace Sudoku_Lib
     public class Sudoku
     {
         private int?[,] GameBoard { get; set; }
+
+        private Random Random { get; set; }
+
         public int?[,] PuzzleBoard { get; private set; }
 
         public bool IsInit { get; private set; }
+
+        public int Seed { get; private set; }
 
         public Sudoku()
         {
@@ -30,10 +35,12 @@ namespace Sudoku_Lib
 
         public bool GameboardIsInit() => GameBoard.IsComplete();
 
-        public async Task Init()
+        public async Task Init(int? seed = null)
         {
             List<SudokuWorker> workers = new List<SudokuWorker>();
             SudokuWorker worker;
+
+            SetSeed(seed);
 
             await Task.Run(() =>
             {
@@ -44,7 +51,7 @@ namespace Sudoku_Lib
                         iterations++;
                         if (this[i, j] == null)
                         {
-                            worker = new SudokuWorker(i, j);
+                            worker = new SudokuWorker(i, j, Random);
                             workers.Add(worker);
                         }
                         else
@@ -95,21 +102,25 @@ namespace Sudoku_Lib
             });
         }
 
+        private void SetSeed(int? seed = null) {
+            Seed = seed.HasValue ? seed.Value : new Random().Next();
+            Random = new Random(Seed);
+        }
+
         public bool Equals(int?[,] gameboard)
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    if (this.GameBoard[i, j] != gameboard[i, j])
+                    if (GameBoard[i, j] != gameboard[i, j])
                         return false;
             return true;
         }
 
         private void InitPuzzleBoard()
         {
-            var random = new Random();
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    PuzzleBoard[i, j] = random.Next() % 3 == 0 ? null :  GameBoard[i, j];
+                    PuzzleBoard[i, j] = Random.Next() % 3 == 0 ? null :  GameBoard[i, j];
         }
 
         public int EmptyPuzzleBoardCellsCount()
@@ -201,11 +212,13 @@ namespace Sudoku_Lib
         internal int Row { get; }
         internal int Col { get; }
         internal int Current;
+        private Random random;
 
-        public SudokuWorker(int row, int col)
+        public SudokuWorker(int row, int col, Random random)
         {
             Row = row;
             Col = col;
+            this.random = random;
             SetNewCurrent();
         }
 
@@ -215,7 +228,7 @@ namespace Sudoku_Lib
                 Left.Remove(Current);
 
             if (Left.Count() > 0)
-                Current = Left[new Random().Next(0, Left.Count())];
+                Current = Left[random.Next(0, Left.Count())];
         }
     }
 }

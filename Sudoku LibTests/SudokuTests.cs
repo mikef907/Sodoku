@@ -180,5 +180,20 @@ namespace Sudoku_Lib.Tests
             await sudoku.Init();
             Assert.False(sudoku.Equals(sudoku.PuzzleBoard));
         }
+
+        [Fact()]
+        public async Task SeededGamesShouldBeIdentical()
+        {
+            int seed = new Random().Next();
+            await sudoku.Init(seed);
+
+            var _sudoku = new Sudoku();
+            await _sudoku.Init(seed);
+
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    Assert.Equal(sudoku.PuzzleBoard[i, j], _sudoku.PuzzleBoard[i, j]);
+
+        }
     }
 }
