@@ -10,16 +10,17 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout 
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" >
+        <StackLayout VerticalOptions="Center">
             <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
-            <Label Text="{Binding Timer}" IsVisible="{Binding IsInit}" HorizontalTextAlignment="Center"></Label>
-            <Label Text="{Binding Seed}" IsVisible="{Binding IsInit}" HorizontalTextAlignment="Center"></Label>
+            <StackLayout VerticalOptions="Start" HorizontalOptions="Center" IsVisible="{Binding IsInit}">
+                <Label Text="{Binding Timer}" HorizontalTextAlignment="Center"></Label>
+                <Label Text="{Binding Seed, StringFormat='Seed is {0}'}" HorizontalTextAlignment="Center"></Label>
+            </StackLayout>
             <Grid x:Name="grid" x:FieldModifier="public"></Grid>
-            <StackLayout IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
-                <Button Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>
-                <Button Text="Start Over" Command="{Binding StartOverCommand}" IsVisible="{Binding IsInit}"></Button>
+            <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="1" Orientation="Horizontal" IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
+                <Button HorizontalOptions="CenterAndExpand" Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>
+                <Button HorizontalOptions="FillAndExpand" Text="Copy Seed" Command="{Binding CopySeedCommand}" IsVisible="{Binding IsInit}"></Button>
+                <Button HorizontalOptions="FillAndExpand" Text="Start Over" Command="{Binding StartOverCommand}" IsVisible="{Binding IsInit}"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

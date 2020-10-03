@@ -1,7 +1,9 @@
 ﻿using Sudoku_Lib;
+using Sudoku_UI.Models;
 using Sudoku_UI.Views;
 using System;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Sudoku_UI.ViewModels
@@ -15,6 +17,7 @@ namespace Sudoku_UI.ViewModels
         private Grid sudokuGrid;
         private SudokuPage page;
         private int seed;
+        private GameTimer gameTimer { get; set; }
 
         public bool IsInit
         {
@@ -52,15 +55,24 @@ namespace Sudoku_UI.ViewModels
                 }
             });
 
+            CopySeedCommand = new Command(async () =>
+            {
+                await Clipboard.SetTextAsync(Seed.ToString());
+                await page.DisplayAlert("Seed Copied", $"Seed {Seed} copied to clipboard", "Gee, thanks");
+            });
+
         }
 
         public Command StartOverCommand { get; }
 
         public Command StartCommand { get; }
 
+        public Command CopySeedCommand { get; }
+
         public async Task ShowBoard()
         {
             IsBusy = true;
+            gameTimer?.Dispose();
             sudokuGrid.Children.Clear();
             await sudoku.Init();
 
@@ -109,15 +121,10 @@ namespace Sudoku_UI.ViewModels
             }
             Seed = sudoku.Seed;
             IsInit = sudoku.IsInit;
-
-            Timer = TimeSpan.FromSeconds(0);
-            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-            {
-                Timer = Timer.Add(TimeSpan.FromSeconds(1));
-                return true;
-            });
-
             IsBusy = false;
+
+            gameTimer = new GameTimer(SetGameTime());
+            gameTimer.StartTimer();
         }
 
         private async void Entry_TextChanged(object sender, TextChangedEventArgs e)
@@ -126,6 +133,13 @@ namespace Sudoku_UI.ViewModels
             await InputValue(e.NewTextValue, (int)element.AnchorX, (int)element.AnchorY);
             element.Unfocus();
         }
+
+        private Action SetGameTime() 
+        {
+            Timer = TimeSpan.FromSeconds(0);
+            return () => Timer = Timer.Add(TimeSpan.FromSeconds(1));
+        }
+        
 
         private async Task InputValue(string textValue, int row, int col)
         {
