@@ -18,7 +18,10 @@
             </StackLayout>
             <Grid x:Name="grid" x:FieldModifier="public"></Grid>
             <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="1" Orientation="Horizontal" IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
-                <Button HorizontalOptions="CenterAndExpand" Text="Start Game" Command="{Binding StartCommand}" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}"></Button>
+                <StackLayout HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}">
+                    <Button  Text="Start Game" Command="{Binding StartCommand}"></Button>
+                    <Entry x:Name="seedEntry" x:FieldModifier="public" Placeholder="Seed Value"></Entry>
+                </StackLayout>
                 <Button HorizontalOptions="FillAndExpand" Text="Copy Seed" Command="{Binding CopySeedCommand}" IsVisible="{Binding IsInit}"></Button>
                 <Button HorizontalOptions="FillAndExpand" Text="Start Over" Command="{Binding StartOverCommand}" IsVisible="{Binding IsInit}"></Button>
             </StackLayout>

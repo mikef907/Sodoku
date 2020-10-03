@@ -74,8 +74,21 @@ namespace Sudoku_UI.ViewModels
             IsBusy = true;
             gameTimer?.Dispose();
             sudokuGrid.Children.Clear();
-            await sudoku.Init();
 
+            if (!string.IsNullOrEmpty(page.seedEntry.Text))
+            {
+                int seed;
+                if (int.TryParse(page.seedEntry.Text, out seed))
+                {
+                    await sudoku.Init(seed);
+                }
+                else
+                    await sudoku.Init();
+            }
+            else
+                await sudoku.Init();
+
+            page.seedEntry.Text = null;
 
             for (int i = 0; i < 9; i++)
             {
