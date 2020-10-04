@@ -158,4 +158,10 @@
       <Name>Sudoku UI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\icons8_play_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\sudoku.png" />
+  </ItemGroup>
 </Project>
