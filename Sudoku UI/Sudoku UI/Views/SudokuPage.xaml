@@ -16,7 +16,7 @@
                 <Label Text="{Binding Timer}" HorizontalTextAlignment="Center"></Label>
                 <Label Text="{Binding Seed, StringFormat='Seed is {0}'}" HorizontalTextAlignment="Center"></Label>
             </StackLayout>
-            <Grid x:Name="grid" x:FieldModifier="public"></Grid>
+            <Grid x:Name="grid" x:FieldModifier="public" ColumnSpacing="1" RowSpacing="1"></Grid>
             <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="1" Orientation="Horizontal" IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
                 <StackLayout HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}">
                     <Button  Text="Start Game" Command="{Binding StartCommand}"></Button>

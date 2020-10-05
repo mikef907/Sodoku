@@ -69,12 +69,8 @@ namespace Sudoku_UI.ViewModels
 
         public Command CopySeedCommand { get; }
 
-        public async Task ShowBoard()
+        public async Task InitBoard()
         {
-            IsBusy = true;
-            gameTimer?.Dispose();
-            sudokuGrid.Children.Clear();
-
             if (!string.IsNullOrEmpty(page.seedEntry.Text))
             {
                 int seed;
@@ -87,8 +83,20 @@ namespace Sudoku_UI.ViewModels
             }
             else
                 await sudoku.Init();
+        }
+
+        public async Task ShowBoard()
+        {
+            IsBusy = true;
+            gameTimer?.Dispose();
+            sudokuGrid.Children.Clear();
+
+            await InitBoard();
 
             page.seedEntry.Text = null;
+
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += TapGesture_Tapped;
 
             for (int i = 0; i < 9; i++)
             {
@@ -99,32 +107,42 @@ namespace Sudoku_UI.ViewModels
                     var center = i / 3 == 1 && j / 3 == 1;
                     var accent = (evenRow && evenCol) || center ? 0.1 : 0.2;
 
+                    string possibleGuesses = null;
+
+                    if (!sudoku.PuzzleBoard[i, j].HasValue)
+                    {
+                        possibleGuesses = string.Join(" ", sudoku.PossibleGuesses(i, j));
+                    }
+
                     var stack = new StackLayout()
                     {
                         BackgroundColor = new Color(0, 0, 0.5, accent),
-                        Orientation = StackOrientation.Horizontal
+                        BindingContext = $"{i},{j},{possibleGuesses}",
+                        Spacing = 0
                     };
+
+                    if (!sudoku.PuzzleBoard[i, j].HasValue) 
+                    {
+                        stack.GestureRecognizers.Add(tapGesture);
+                    }
 
                     var guesses = new Label 
                     { 
-                        Text = sudoku.PuzzleBoard[i, j].HasValue ? null : string.Join(" ", sudoku.PossibleGuesses(i, j)), 
-                        FontSize = 10
+                        Text = possibleGuesses, 
+                        FontSize = 10,
+                        VerticalOptions = LayoutOptions.StartAndExpand,
+                        HorizontalOptions= LayoutOptions.FillAndExpand,
                     };
 
-
-                    var entry = new Entry
+                    var entry = new Label()
                     {
                         Text = sudoku.PuzzleBoard[i, j].ToString(),
-                        IsReadOnly = sudoku.PuzzleBoard[i, j].HasValue,
-                        FontSize = 16,
-                        Keyboard = Keyboard.Numeric,
-                        MaxLength = 1,
-                        AnchorX = i,
-                        AnchorY = j
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        FontSize = 25
                     };
 
-
-                    entry.TextChanged += Entry_TextChanged;
+                    if (sudoku.PuzzleBoard[i, j].HasValue)
+                        entry.FontAttributes = FontAttributes.Bold;
 
                     stack.Children.Add(guesses);
                     stack.Children.Add(entry);
@@ -138,6 +156,16 @@ namespace Sudoku_UI.ViewModels
 
             gameTimer = new GameTimer(SetGameTime());
             gameTimer.StartTimer();
+        }
+
+        private async void TapGesture_Tapped(object sender, EventArgs e)
+        {
+            var stackLayout = sender as StackLayout;
+            var context = stackLayout.BindingContext.ToString().Split(',');
+            string result = await page.DisplayPromptAsync("Input a number", $"Possible values are {context[2]}", maxLength: 1, keyboard: Keyboard.Numeric);
+            if (await InputValue(result, Convert.ToInt32(context[0]), Convert.ToInt32(context[1])))
+                (stackLayout.Children[1] as Label).Text = result;
+
         }
 
         private async void Entry_TextChanged(object sender, TextChangedEventArgs e)
@@ -154,17 +182,19 @@ namespace Sudoku_UI.ViewModels
         }
         
 
-        private async Task InputValue(string textValue, int row, int col)
+        private async Task<bool> InputValue(string textValue, int row, int col)
         {
             int value;
 
             if (string.IsNullOrEmpty(textValue))
             {
                 sudoku.PuzzleBoard[row, col] = null;
+                return true;
             }
             else if (int.TryParse(textValue, out value))
             {
                 sudoku.PuzzleBoard[row, col] = value;
+                return true;
             }
 
             if (sudoku.PuzzleBoard.IsComplete())
@@ -174,7 +204,9 @@ namespace Sudoku_UI.ViewModels
                     await page.DisplayAlert("Complete!", "We're done here!", "PEACE!");
                     await ShowBoard();
                 }
+                return true;
             }
+            return false;
         }
     }
 }
