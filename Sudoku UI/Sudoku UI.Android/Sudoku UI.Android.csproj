@@ -115,7 +115,7 @@
     <AndroidResource Include="Resources\drawable\sudoku.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icons8_play_32.png" />
+    <AndroidResource Include="Resources\drawable\icons8_play.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

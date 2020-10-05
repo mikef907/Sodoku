@@ -8703,7 +8703,7 @@ namespace SudokuUI.Droid
 			public const int design_snackbar_background = 2131165291;
 			
 			// aapt resource value: 0x7F07006F
-			public const int icons8_play_32 = 2131165295;
+			public const int icons8_play = 2131165295;
 			
 			// aapt resource value: 0x7F07006C
 			public const int ic_mtrl_chip_checked_black = 2131165292;

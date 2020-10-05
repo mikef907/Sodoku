@@ -159,9 +159,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\icons8_play_32.png" />
+    <AndroidResource Include="Resources\sudoku.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\sudoku.png" />
+    <BundleResource Include="Resources\icons8-play%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8-play%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8_play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\sudoku%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\sudoku%403x.png" />
   </ItemGroup>
 </Project>
