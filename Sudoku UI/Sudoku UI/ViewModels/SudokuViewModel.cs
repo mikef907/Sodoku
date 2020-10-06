@@ -117,7 +117,7 @@ namespace Sudoku_UI.ViewModels
                     var stack = new StackLayout()
                     {
                         BackgroundColor = new Color(0, 0, 0.5, accent),
-                        BindingContext = $"{i},{j},{possibleGuesses}",
+                        BindingContext = $"{i}:{j}:{possibleGuesses}",
                         Spacing = 0
                     };
 
@@ -129,7 +129,8 @@ namespace Sudoku_UI.ViewModels
                     var guesses = new Label 
                     { 
                         Text = possibleGuesses, 
-                        FontSize = 10,
+                        FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
+                        HeightRequest = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
                         VerticalOptions = LayoutOptions.StartAndExpand,
                         HorizontalOptions= LayoutOptions.FillAndExpand,
                     };
@@ -138,7 +139,7 @@ namespace Sudoku_UI.ViewModels
                     {
                         Text = sudoku.PuzzleBoard[i, j].ToString(),
                         HorizontalTextAlignment = TextAlignment.Center,
-                        FontSize = 25
+                        FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
 
                     if (sudoku.PuzzleBoard[i, j].HasValue)
@@ -161,8 +162,8 @@ namespace Sudoku_UI.ViewModels
         private async void TapGesture_Tapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            var context = stackLayout.BindingContext.ToString().Split(',');
-            string result = await page.DisplayPromptAsync("Input a number", $"Possible values are {context[2]}", maxLength: 1, keyboard: Keyboard.Numeric);
+            var context = stackLayout.BindingContext.ToString().Split(':');
+            string result = await page.DisplayPromptAsync("Input a number", $"Possible values are {context[2].Replace(" ",", ")}", maxLength: 1, keyboard: Keyboard.Numeric);
             if (await InputValue(result, Convert.ToInt32(context[0]), Convert.ToInt32(context[1])))
                 (stackLayout.Children[1] as Label).Text = result;
 
