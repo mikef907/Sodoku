@@ -180,4 +180,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\sudoku%403x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\original.png" />
+  </ItemGroup>
 </Project>

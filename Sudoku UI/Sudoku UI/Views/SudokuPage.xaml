@@ -9,6 +9,8 @@
             <local:InverseBoolConverter x:Key="inverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center">
             <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
@@ -22,8 +24,6 @@
                     <Button  Text="Start Game" Command="{Binding StartCommand}"></Button>
                     <Entry x:Name="seedEntry" x:FieldModifier="public" Placeholder="Seed Value"></Entry>
                 </StackLayout>
-                <Button HorizontalOptions="FillAndExpand" Text="Copy Seed" Command="{Binding CopySeedCommand}" IsVisible="{Binding IsInit}"></Button>
-                <Button HorizontalOptions="FillAndExpand" Text="Start Over" Command="{Binding StartOverCommand}" IsVisible="{Binding IsInit}"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

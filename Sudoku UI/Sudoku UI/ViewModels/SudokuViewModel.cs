@@ -41,10 +41,17 @@ namespace Sudoku_UI.ViewModels
         {
             isInit = false;
             sudoku = new Sudoku();
-            this.sudokuGrid = sudokuPage.grid;
+            sudokuGrid = sudokuPage.grid;
             page = sudokuPage;
 
-            StartCommand = new Command(async () => await ShowBoard());
+            page.ToolbarItems.Clear();
+
+            StartCommand = new Command(async () => {
+                await ShowBoard();
+                page.ToolbarItems.Clear();
+                page.ToolbarItems.Add(new ToolbarItem { Text = "Start Over", Command = StartOverCommand });
+                page.ToolbarItems.Add(new ToolbarItem { Text = "Copy Seed", Command = CopySeedCommand });
+            });
 
             StartOverCommand = new Command(async() =>
             {
@@ -130,7 +137,7 @@ namespace Sudoku_UI.ViewModels
                     { 
                         Text = possibleGuesses, 
                         FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
-                        HeightRequest = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
+                        HeightRequest = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                         VerticalOptions = LayoutOptions.StartAndExpand,
                         HorizontalOptions= LayoutOptions.FillAndExpand,
                     };
@@ -202,7 +209,8 @@ namespace Sudoku_UI.ViewModels
             {
                 if (sudoku.Equals(sudoku.PuzzleBoard))
                 {
-                    await page.DisplayAlert("Complete!", "We're done here!", "PEACE!");
+                    gameTimer.StopTimer();
+                    await page.DisplayAlert("Completed!", $"Your time is {Timer}", "PEACE!");
                     await ShowBoard();
                 }
                 return true;
