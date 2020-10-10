@@ -1,39 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ess="clr-namespace:Xamarin.Essentials;assembly=Xamarin.Essentials"
              x:Class="Sudoku_UI.Views.AboutPage"
-             xmlns:vm="clr-namespace:Sudoku_UI.ViewModels"
-             Title="{Binding Title}">
-    
-    <ContentPage.BindingContext>
-        <vm:AboutViewModel />
-    </ContentPage.BindingContext>
-    
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Color x:Key="Accent">LightBlue</Color>
-        </ResourceDictionary>
-    </ContentPage.Resources>
+             Title="About">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
-                    <Image Source="sudoku.png" VerticalOptions="Center" HeightRequest="64" />
-                </ContentView>
-            </StackLayout>
+    <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="10, 10">
+        <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+            <Label FontAttributes="Bold" Text="{Binding Source={x:Static ess:VersionTracking.CurrentVersion}, StringFormat='Version {0}'}"></Label>
+            <Label FontAttributes="Italic" Text="{Binding Source={x:Static ess:VersionTracking.CurrentBuild}, StringFormat='Build {0}'}"></Label>
         </StackLayout>
-        <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Label Text="Welcome to Sudoku!" FontSize="Title" HorizontalOptions="Center" VerticalOptions="Center"
-                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
-                <Label Text="Click the play button below to start a game." HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Subtitle"></Label>
-            </StackLayout>
-        </ScrollView>
-    </Grid>
+        
+        <Label>
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Sudoku - " FontAttributes="Italic"></Span>
+                    <Span Text="a puzzle in which players insert the numbers one to nine into a grid consisting of nine squares subdivided into a further nine smaller squares in such a way that every number appears once in each horizontal line, vertical line, and square."></Span>
+                    <Span Text="(source)"
+                          TextColor="Blue"
+                          TextDecorations="Underline">
+                        <Span.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TapCommand}"
+                                          CommandParameter="https://languages.oup.com/google-dictionary-en/" />
+                        </Span.GestureRecognizers>
+                    </Span>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+            
+        
+        <Label Text="Seeds can be used to recreate puzzles, this allows for puzzles to be shared and replayed."></Label>
+        
+        <Label Text="TODO: Add saving of completed seeds with times"></Label>
+        <Label Text="TODO: Allow for sharing of seeds and completion times"></Label>
+        
+        <StackLayout>
+            <Label Text="Special Thanks To" HorizontalTextAlignment="Center" FontSize="Large"></Label>
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Bryon Beaubien for the sweet app icon design,  " />
+                        <Span Text="check out his portfolio"
+                          TextColor="Blue"
+                          TextDecorations="Underline">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TapCommand}"
+                                          CommandParameter="https://beaubastic.com/" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Icons8 for the play icon,  " />
+                        <Span Text="lots of cool icons"
+                          TextColor="Blue"
+                          TextDecorations="Underline">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TapCommand}"
+                                          CommandParameter="https://icons8.com/" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
+    </StackLayout>
 
 </ContentPage>

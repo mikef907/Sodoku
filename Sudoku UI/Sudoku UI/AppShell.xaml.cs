@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Sudoku_UI.ViewModels;
 using Sudoku_UI.Views;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Sudoku_UI
@@ -11,7 +12,7 @@ namespace Sudoku_UI
         public AppShell()
         {
             InitializeComponent();
+            VersionTracking.Track();
         }
-
     }
 }

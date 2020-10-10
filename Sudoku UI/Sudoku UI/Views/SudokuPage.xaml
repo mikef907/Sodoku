@@ -1,30 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:local="clr-namespace:Sudoku_UI.Models"
+             xmlns:models="clr-namespace:Sudoku_UI.Models"
              x:Class="Sudoku_UI.Views.SudokuPage"
              Title="Sudoku">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:InverseBoolConverter x:Key="inverter" />
+            <models:InverseBoolConverter x:Key="inverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
     </ContentPage.ToolbarItems>
-    <ContentPage.Content>
-        <StackLayout VerticalOptions="Center">
-            <ActivityIndicator IsRunning="{Binding IsBusy}"></ActivityIndicator>
-            <StackLayout VerticalOptions="Start" HorizontalOptions="Center" IsVisible="{Binding IsInit}">
-                <Label Text="{Binding Timer}" HorizontalTextAlignment="Center"></Label>
-                <Label Text="{Binding Seed, StringFormat='Seed is {0}'}" HorizontalTextAlignment="Center"></Label>
-            </StackLayout>
-            <Grid x:Name="grid" x:FieldModifier="public" ColumnSpacing="1" RowSpacing="1"></Grid>
-            <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand" Spacing="1" Orientation="Horizontal" IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
-                <StackLayout HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsInit, Converter={StaticResource inverter}}">
-                    <Button  Text="Start Game" Command="{Binding StartCommand}"></Button>
-                    <Entry x:Name="seedEntry" x:FieldModifier="public" Placeholder="Seed Value"></Entry>
-                </StackLayout>
+    <StackLayout>
+        <StackLayout VerticalOptions="CenterAndExpand" x:Name="startStack">
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="1" IsVisible="{Binding IsBusy, Converter={StaticResource inverter}}">
+                <Button  Text="Start Game" Clicked="StartGame"></Button>
+                <Entry x:Name="seedEntry" Placeholder="Seed Value"></Entry>
             </StackLayout>
         </StackLayout>
-    </ContentPage.Content>
+        
+        <StackLayout x:Name="gameStack" VerticalOptions="FillAndExpand" >
+            
+            <RelativeLayout VerticalOptions="Start">
+                <Label Text="{Binding Timer}" HorizontalOptions="Center" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"></Label>
+                <Label Text="{Binding Seed, StringFormat='Seed is {0}'}"  RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"></Label>
+            </RelativeLayout>
+
+            <Grid VerticalOptions="Start" x:Name="grid" ColumnSpacing="1" RowSpacing="1" >
+            </Grid>
+
+            <StackLayout VerticalOptions="End" IsVisible="{Binding ShowWorkbench}">
+                <Entry x:Name="valueEntry" HorizontalOptions="Center" VerticalOptions="End" HorizontalTextAlignment="Center" Placeholder="Cell Value" MaxLength="1" Keyboard="Numeric" TextChanged="EntryCell_Completed">
+                </Entry>
+                <Label Text="Workbench" FontSize="Micro" HorizontalTextAlignment="Center"></Label>
+                <Grid x:Name="numberStrip">
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="0" Text="0" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="1" Text="1" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="2" Text="2" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="3" Text="3" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="4" Text="4" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="5" Text="5" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="6" Text="6" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="7" Text="7" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="8" Text="8" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="9" Text="9" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                </Grid>
+            </StackLayout>
+        </StackLayout>
+        
+        <ActivityIndicator VerticalOptions="Center" HorizontalOptions="CenterAndExpand" IsRunning="{Binding IsBusy}"></ActivityIndicator>
+    </StackLayout>
 </ContentPage>

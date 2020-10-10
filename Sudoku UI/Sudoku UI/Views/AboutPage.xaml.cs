@@ -1,7 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Sudoku_UI.Views
 {
@@ -10,6 +10,12 @@ namespace Sudoku_UI.Views
         public AboutPage()
         {
             InitializeComponent();
+            BindingContext = this;
         }
+
+        public ICommand TapCommand => new Command<string>((url) =>
+        {
+            Launcher.OpenAsync(new Uri(url));
+        });
     }
 }

@@ -120,7 +120,7 @@ namespace Sudoku_Lib
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    PuzzleBoard[i, j] = Random.Next() % 3 == 0 ? null :  GameBoard[i, j];
+                    PuzzleBoard[i, j] = Random.Next() % 2 == 0 ? null :  GameBoard[i, j];
         }
 
         public int EmptyPuzzleBoardCellsCount()
