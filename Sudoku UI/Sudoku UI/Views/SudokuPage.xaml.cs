@@ -173,7 +173,8 @@ namespace Sudoku_UI.Views
             numberStrip.Children.ForEach(child =>
             {
                 var btn = child as Button;
-                if (context.Data.Contains(Grid.GetColumn(btn)))
+                var number = Convert.ToInt32(btn.Text);
+                if (context.Data.Contains(number))
                 {
                     btn.TextColor = Color.DarkGreen;
                 }
@@ -249,7 +250,7 @@ namespace Sudoku_UI.Views
             var btn = sender as Button;
             var label = (_selectedCell.Children[0] as Label);
             var values = _selectedCell.BindingContext as SudokuCellData;
-            var number = Grid.GetColumn(btn);
+            var number = Convert.ToInt32(btn.Text);
             if (values.Data.Contains(number))
             {
                 values.Data.Remove(number);

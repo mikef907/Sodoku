@@ -34,16 +34,15 @@
                 </Entry>
                 <Label Text="Workbench" FontSize="Micro" HorizontalTextAlignment="Center"></Label>
                 <Grid x:Name="numberStrip">
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="0" Text="0" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="1" Text="1" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="2" Text="2" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="3" Text="3" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="4" Text="4" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="5" Text="5" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="6" Text="6" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="7" Text="7" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="8" Text="8" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="9" Text="9" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="0" Text="1" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="1" Text="2" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="2" Text="3" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="3" Text="4" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="4" Text="5" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="5" Text="6" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="6" Text="7" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="7" Text="8" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="8" Text="9" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
                 </Grid>
             </StackLayout>
         </StackLayout>

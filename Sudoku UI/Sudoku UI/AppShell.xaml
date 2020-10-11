@@ -31,9 +31,9 @@
     </Shell.Resources>
 
     <TabBar>
-        <ShellContent x:Name="welcomePage" Title="Welcome" Route="WelcomePage" ContentTemplate="{DataTemplate local:WelcomePage}" />
+        <ShellContent Title="Welcome" Icon="tab_about.png" Route="WelcomePage" ContentTemplate="{DataTemplate local:WelcomePage}" />
         <ShellContent Title="Play Sudoku" Icon="icons8_play.png" Route="SudokuPage" ContentTemplate="{DataTemplate local:SudokuPage}" />
-        <ShellContent Title="About" Icon="tab_about.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
+        <ShellContent Title="About" Icon="tab_feed.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
     </TabBar>
 
     <!--
