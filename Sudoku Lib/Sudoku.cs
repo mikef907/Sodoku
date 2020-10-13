@@ -88,17 +88,6 @@ namespace Sudoku_Lib
                     }
                 InitPuzzleBoard();
                 IsInit = true;
-
-#if DEBUG
-                Debug.WriteLine($"Iterations:{iterations}");
-                for (int i = 0; i < 9; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                        Debug.Write($"| {this[i, j]} ");
-                    Debug.WriteLine("|");
-                }
-
-#endif
             });
         }
 
@@ -120,7 +109,12 @@ namespace Sudoku_Lib
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    PuzzleBoard[i, j] = Random.Next() % 2 == 0 ? null :  GameBoard[i, j];
+#if DEBUG
+                    PuzzleBoard[i, j] = GameBoard[i, j];
+            PuzzleBoard[0, 0] = null;
+#else
+            PuzzleBoard[i, j] = Random.Next() % 2 == 0 ? null :  GameBoard[i, j];
+#endif
         }
 
         public int EmptyPuzzleBoardCellsCount()
@@ -189,11 +183,40 @@ namespace Sudoku_Lib
             {
                 if (value < 1 || value > 9)
                     throw new ArgumentException("Invalid Value");
-                board.ValidateRow(row, value);
-                board.ValidateCol(col, value);
-                board.ValidateSquare(row, col, value);
+                try
+                {
+                    board.ValidateRow(row, value);
+                    board.ValidateCol(col, value);
+                    board.ValidateSquare(row, col, value);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw ex;
+                }
             }
             board[row, col] = value;
+        }
+
+        public static bool IsSolved(this int?[,] board)
+        {
+            bool isSolved;
+            int?[,] solved = new int?[9, 9];
+            try
+            {
+                for (int i = 0; i < 9; i++)
+                    for (int j = 0; j < 9; j++)
+                        solved.SetCell(i, j, board[i, j]);
+                isSolved = true;
+            }
+            catch (ArgumentException)
+            {
+                isSolved = false;
+            }
+            catch (InvalidOperationException)
+            {
+                isSolved = false;
+            }
+            return isSolved;
         }
 
         public static bool IsComplete(this int?[,] board)

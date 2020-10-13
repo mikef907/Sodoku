@@ -51,6 +51,7 @@ namespace Sudoku_UI.Views
         public SudokuPage()
         {
             InitializeComponent();
+            DeviceDisplay.KeepScreenOn = true;
             BindingContext = this;
             ShowWorkbench = false;
             gameStack.IsVisible = false;
@@ -70,6 +71,22 @@ namespace Sudoku_UI.Views
                 await Clipboard.SetTextAsync(Seed.ToString());
                 await DisplayAlert("Seed Copied", $"Seed {Seed} copied to clipboard", "Gee, thanks");
             });
+
+            Disappearing += SudokuPage_Disappearing;
+            Appearing += SudokuPage_Appearing;
+        }
+
+        private void SudokuPage_Appearing(object sender, EventArgs e)
+        {
+            _gameTimer = new GameTimer(() => Timer = Timer.Add(TimeSpan.FromSeconds(1)));
+            _gameTimer.InitTimer();
+            _gameTimer?.StartTimer();
+        }
+
+        private void SudokuPage_Disappearing(object sender, EventArgs e)
+        {
+            _gameTimer?.StopTimer();
+            _gameTimer = null;
         }
 
         public async Task InitBoard()
@@ -146,7 +163,7 @@ namespace Sudoku_UI.Views
             }
             Seed = sudoku.Seed;
             _gameTimer = new GameTimer(SetGameTime());
-            _gameTimer.StartTimer();
+            _gameTimer.InitTimer();
 
             startStack.IsVisible = false;
             startStack.HeightRequest = 0;
@@ -155,6 +172,7 @@ namespace Sudoku_UI.Views
             gameStack.HeightRequest = Device.GetNamedSize(NamedSize.Default, typeof(StackLayout));
 
             IsBusy = false;
+            _gameTimer.StartTimer();
         }
 
         private void TapGesture_Tapped(object sender, EventArgs e)
@@ -224,10 +242,10 @@ namespace Sudoku_UI.Views
         {
             if (sudoku.PuzzleBoard.IsComplete())
             {
-                if (sudoku.Equals(sudoku.PuzzleBoard))
+                if (sudoku.PuzzleBoard.IsSolved())
                 {
                     _gameTimer.StopTimer();
-                    await DisplayAlert("Completed!", $"Your time is {Timer}", "PEACE!");
+                    await DisplayAlert("Completed!", $"Your time for the seed {Seed} is {Timer}", "PEACE!");
                     await ShowBoard();
                 }
                 else

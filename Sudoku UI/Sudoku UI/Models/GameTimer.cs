@@ -15,17 +15,16 @@ namespace Sudoku_UI.Models
             this.action = action;
         }
 
-        public Action StopTimer() => () => isRunning = false;
-
-        public void StartTimer() { 
-            isRunning = true;
+        public void StopTimer() => isRunning = false;
+        public void StartTimer() => isRunning = true;
+        public void InitTimer() { 
             Device.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
                 if (action == null) return false;
-                else { 
-                    Task.Run(action);
-                    return isRunning;
+                else if(isRunning) {
+                    Device.BeginInvokeOnMainThread(action);
                 }
+                return isRunning;
             });        
         }
       
