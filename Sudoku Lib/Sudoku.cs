@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace Sudoku_Lib
 {
@@ -12,7 +16,7 @@ namespace Sudoku_Lib
 
         private Random Random { get; set; }
 
-        public int?[,] PuzzleBoard { get; private set; }
+        public SudokuCellData[,] PuzzleBoard { get; private set; }
 
         public bool IsInit { get; private set; }
 
@@ -22,7 +26,7 @@ namespace Sudoku_Lib
         {
             IsInit = false;
             GameBoard = new int?[9, 9];
-            PuzzleBoard = new int?[9, 9];
+            PuzzleBoard = new SudokuCellData[9, 9];
         }
 
         private int? this[int row, int col]
@@ -110,10 +114,10 @@ namespace Sudoku_Lib
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
 #if DEBUG
-                    PuzzleBoard[i, j] = GameBoard[i, j];
-            PuzzleBoard[0, 0] = null;
+                    PuzzleBoard[i, j] = new SudokuCellData(i, j, GameBoard[i, j]);
+            PuzzleBoard[0, 0].Value = null;
 #else
-            PuzzleBoard[i, j] = Random.Next() % 2 == 0 ? null :  GameBoard[i, j];
+            PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null :  GameBoard[i, j]);
 #endif
         }
 
@@ -134,20 +138,52 @@ namespace Sudoku_Lib
             List<int> possible = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
             for (int i = 0; i < 9; i++)
-                possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[row, i]));
+                possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[row, i].Value));
 
             for (int i = 0; i < 9; i++)
-                possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[i, col]));
+                possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[i, col].Value));
 
             int rowBoundary = row - (row % 3);
             int colBoundary = col - (col % 3);
 
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[rowBoundary + i, colBoundary + j]));
+                    possible.Remove(possible.FirstOrDefault(n => n == PuzzleBoard[rowBoundary + i, colBoundary + j].Value));
 
             return possible.ToArray();
         }       
+    }
+
+    public class SudokuCellData: INotifyPropertyChanged
+    {
+        public readonly int Row;
+        public readonly int Col;
+        public ObservableCollection<int> Data = new ObservableCollection<int>();
+
+        private int? _value;
+        public int? Value
+        {
+            get => _value;
+            set {
+                if (_value == value) return;
+                _value = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) 
+        { 
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
+        }
+
+        public SudokuCellData(int row, int col, int? value)
+        {
+            Row = row;
+            Col = col;
+            _value = value;
+        }
+
     }
 
     public static class SudokuExt
@@ -159,10 +195,24 @@ namespace Sudoku_Lib
                     throw new InvalidOperationException("Invalid Row");        
         }
 
+        public static void ValidateRow(this SudokuCellData[,] board, int row, int? value)
+        {
+            for (int i = 0; i < 9; i++)
+                if (board[row, i].Value == value)
+                    throw new InvalidOperationException("Invalid Row");
+        }
+
         public static void ValidateCol(this int?[,] board, int col, int? value)
         {
             for (int i = 0; i < 9; i++)
                 if (board[i, col] == value)
+                    throw new InvalidOperationException("Invalid Col");
+        }
+
+        public static void ValidateCol(this SudokuCellData[,] board, int col, int? value)
+        {
+            for (int i = 0; i < 9; i++)
+                if (board[i, col].Value == value)
                     throw new InvalidOperationException("Invalid Col");
         }
 
@@ -174,6 +224,17 @@ namespace Sudoku_Lib
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     if (board[rowBoundary + i, colBoundary + j] == value)
+                        throw new InvalidOperationException("Invalid Square");
+        }
+
+        public static void ValidateSquare(this SudokuCellData[,] board, int row, int col, int? value)
+        {
+            int rowBoundary = row - (row % 3);
+            int colBoundary = col - (col % 3);
+
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    if (board[rowBoundary + i, colBoundary + j].Value == value)
                         throw new InvalidOperationException("Invalid Square");
         }
 
@@ -197,7 +258,27 @@ namespace Sudoku_Lib
             board[row, col] = value;
         }
 
-        public static bool IsSolved(this int?[,] board)
+        public static void SetCell(this SudokuCellData[,] board, int row, int col, int? value)
+        {
+            if (value != null)
+            {
+                if (value < 1 || value > 9)
+                    throw new ArgumentException("Invalid Value");
+                try
+                {
+                    board.ValidateRow(row, value);
+                    board.ValidateCol(col, value);
+                    board.ValidateSquare(row, col, value);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw ex;
+                }
+            }
+            board[row, col].Value = value;
+        }
+
+        public static bool IsSolved(this SudokuCellData[,] board)
         {
             bool isSolved;
             int?[,] solved = new int?[9, 9];
@@ -205,7 +286,7 @@ namespace Sudoku_Lib
             {
                 for (int i = 0; i < 9; i++)
                     for (int j = 0; j < 9; j++)
-                        solved.SetCell(i, j, board[i, j]);
+                        solved.SetCell(i, j, board[i, j].Value);
                 isSolved = true;
             }
             catch (ArgumentException)
@@ -224,6 +305,15 @@ namespace Sudoku_Lib
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                     if (!board[i, j].HasValue)
+                        return false;
+            return true;
+        }
+
+        public static bool IsComplete(this SudokuCellData[,] board)
+        {
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    if (!board[i, j].Value.HasValue)
                         return false;
             return true;
         }

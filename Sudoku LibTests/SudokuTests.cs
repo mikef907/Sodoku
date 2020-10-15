@@ -38,8 +38,8 @@ namespace Sudoku_Lib.Tests
         [InlineData(3, 2, 9)]
         public void ShouldBeAbleToAddIntToGameboard(int row, int col, int value)
         {
-            sudoku.PuzzleBoard[row, col] = value;
-            Assert.Equal(value, sudoku.PuzzleBoard[row, col]);
+            sudoku.PuzzleBoard[row, col] = new SudokuCellData(row, col, value);
+            Assert.Equal(value, sudoku.PuzzleBoard[row, col].Value);
         }
 
         [Theory()]
@@ -54,7 +54,7 @@ namespace Sudoku_Lib.Tests
         [InlineData(8)]
         public void ShouldThrowErrorIfNumberAppearsMoreThanOnceInRow(int row)
         {
-            sudoku.PuzzleBoard[row, 0] = 1;
+            sudoku.PuzzleBoard[row, 0].Value = 1;
             Assert.Throws<InvalidOperationException>(() => sudoku.PuzzleBoard.ValidateRow(row, 1));
         }
 
@@ -70,7 +70,7 @@ namespace Sudoku_Lib.Tests
         [InlineData(8)]
         public void ShoudlThrowErrorIfNumberAppearsMoreThanOnceInCol(int col)
         {
-            sudoku.PuzzleBoard[0, col] = 1;
+            sudoku.PuzzleBoard[0, col].Value = 1;
             Assert.Throws<InvalidOperationException>(() => sudoku.PuzzleBoard.ValidateCol(col, 1));
         }
 
@@ -86,7 +86,7 @@ namespace Sudoku_Lib.Tests
         [InlineData(7, 7)]
         public void ShouldThrowErrorIfNumberAppearsMoreThanOnceInSquare(int row, int col)
         {
-            sudoku.PuzzleBoard[row, col] = 1;
+            sudoku.PuzzleBoard[row, col].Value = 1;
             Assert.Throws<InvalidOperationException>(() => sudoku.PuzzleBoard.ValidateSquare(row, col, 1));
         }
 
@@ -123,7 +123,7 @@ namespace Sudoku_Lib.Tests
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    sudoku.PuzzleBoard[i, j] = c++;
+                    sudoku.PuzzleBoard[i, j].Value = c++;
                     if (c > 9) c = 1;
                 }
                 c = c + 3;

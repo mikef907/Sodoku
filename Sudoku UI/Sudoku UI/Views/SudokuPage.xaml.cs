@@ -128,10 +128,10 @@ namespace Sudoku_UI.Views
                     var stack = new AbsoluteLayout()
                     {
                         BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(i, j)),
-                        BindingContext = new SudokuCellData(i, j)
+                        BindingContext = sudoku.PuzzleBoard[i, j]
                     };
 
-                    if (!sudoku.PuzzleBoard[i, j].HasValue)
+                    if (!sudoku.PuzzleBoard[i, j].Value.HasValue)
                     {
                         stack.GestureRecognizers.Add(tapGesture);
                     }
@@ -140,19 +140,20 @@ namespace Sudoku_UI.Views
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) / 1.4,
                         HeightRequest = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) * 1.8,
-                        LineBreakMode = LineBreakMode.CharacterWrap
+                        LineBreakMode = LineBreakMode.CharacterWrap,
+                        Text = string.Join(" ", sudoku.PuzzleBoard[i,j].Data)
                     };
 
                     var entry = new Label()
                     {
-                        Text = sudoku.PuzzleBoard[i, j].ToString(),
+                        Text = sudoku.PuzzleBoard[i, j].Value.ToString(),
                         HorizontalTextAlignment = TextAlignment.Center,
                         VerticalOptions = LayoutOptions.End,
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
 
 
-                    if (sudoku.PuzzleBoard[i, j].HasValue)
+                    if (sudoku.PuzzleBoard[i, j].Value.HasValue)
                         entry.FontAttributes = FontAttributes.Bold;
 
                     stack.Children.Add(guesses, new Rectangle(0, 0, 1, 0.5), AbsoluteLayoutFlags.All);
@@ -202,7 +203,7 @@ namespace Sudoku_UI.Views
                 }
             });
 
-            valueEntry.Text = sudoku.PuzzleBoard[context.Row, context.Col]?.ToString();
+            valueEntry.Text = sudoku.PuzzleBoard[context.Row, context.Col].Value?.ToString();
             ShowWorkbench = true;
         }
 
@@ -227,12 +228,12 @@ namespace Sudoku_UI.Views
 
             if (string.IsNullOrEmpty(textValue))
             {
-                sudoku.PuzzleBoard[row, col] = null;
+                sudoku.PuzzleBoard[row, col].Value = null;
                 return true;
             }
             else if (int.TryParse(textValue, out value))
             {
-                sudoku.PuzzleBoard[row, col] = value;
+                sudoku.PuzzleBoard[row, col].Value = value;
                 return true;
             }
             return false;
@@ -279,7 +280,18 @@ namespace Sudoku_UI.Views
                 values.Data.Add(number);
                 btn.TextColor = Color.DarkGreen;
             }
-            values.Data.Sort();
+
+            var _ = values.Data.ToList();
+
+            values.Data.Clear();
+
+            _.Sort();
+
+            foreach (int val in _)
+            {
+                values.Data.Add(val);
+            }
+
             label.Text = string.Join(" ", values.Data);
         }
 
