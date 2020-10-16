@@ -1,5 +1,6 @@
 ﻿using Sudoku_Lib;
 using Sudoku_UI.Models;
+using SudokuUI.Persistence;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,16 @@ namespace Sudoku_UI.Views
             {
                 if (await DisplayAlert("Giving Up?", "Do you want to start over?", "Yes", "No"))
                 {
+                    var db = DependencyService.Get<ISQLiteDb>().GetConnection();
+
+                    var game = new SudokuGame {
+                        Time = Timer,
+                        Seed = sudoku.Seed,
+                        Solved = sudoku.PuzzleBoard.IsSolved(),
+                        Attempt = await db.Table<SudokuGame>().Where(s => s.Seed == sudoku.Seed).CountAsync() + 1
+                    };
+
+                    await db.InsertAsync(game);
                     await ShowBoard();
                 }
             });

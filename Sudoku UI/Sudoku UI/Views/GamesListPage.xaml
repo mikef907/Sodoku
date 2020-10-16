@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Sudoku_UI.Views.GamesListPage">
+    <ContentPage.Content>
+        <ListView x:Name="gamesListView">
+            <ListView.Header>
+                <Grid>
+                    <Label Grid.Column="0" Text="Seed" FontAttributes="Bold"></Label>
+                    <Label Grid.Column="1" Text="Time" FontAttributes="Bold"></Label>
+                    <Label Grid.Column="2" Text="Solved" FontAttributes="Bold"></Label>
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Label Grid.Column="0" Text="{Binding Seed}"></Label>
+                            <Label Grid.Column="1" Text="{Binding Time}"></Label>
+                            <Label Grid.Column="2" Text="{Binding Solved}"></Label>
+                        </Grid>
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Copy Seed" Clicked="Copy_Seed_Clicked" CommandParameter="{Binding Seed}"></MenuItem>
+                            <MenuItem Text="Delete" Clicked="Delete_Clicked" IsDestructive="True" CommandParameter="{Binding .}"></MenuItem>
+                        </ViewCell.ContextActions>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

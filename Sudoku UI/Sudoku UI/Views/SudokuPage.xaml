@@ -7,6 +7,11 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <models:InverseBoolConverter x:Key="inverter" />
+            <Style TargetType="Button" x:Key="btnStrip">
+                <Setter Property="BackgroundColor" Value="Transparent"></Setter>
+                <Setter Property="FontAttributes" Value="Bold"></Setter>
+                <Setter Property="FontSize" Value="Medium"></Setter>
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
@@ -34,15 +39,15 @@
                 </Entry>
                 <Label Text="Workbench" FontSize="Micro" HorizontalTextAlignment="Center"></Label>
                 <Grid x:Name="numberStrip">
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="0" Text="1" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="1" Text="2" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="2" Text="3" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="3" Text="4" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="4" Text="5" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="5" Text="6" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="6" Text="7" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="7" Text="8" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
-                    <Button FontSize="Medium" FontAttributes="Bold" Grid.Column="8" Text="9" BackgroundColor="Transparent" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="0" Text="1" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="1" Text="2" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="2" Text="3" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="3" Text="4" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="4" Text="5" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="5" Text="6" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="6" Text="7" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="7" Text="8" Clicked="ToggleValue"></Button>
+                    <Button Style="{StaticResource btnStrip}" BackgroundColor="Transparent" Grid.Column="8" Text="9" Clicked="ToggleValue"></Button>
                 </Grid>
             </StackLayout>
         </StackLayout>
