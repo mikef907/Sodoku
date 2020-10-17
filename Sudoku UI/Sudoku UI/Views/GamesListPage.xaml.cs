@@ -26,7 +26,7 @@ namespace Sudoku_UI.Views
 
             var games = await db.Table<SudokuGame>().ToListAsync();
 
-            games.ForEach(game => _games.Add(game));
+            games?.ForEach(game => _games.Add(game));
 
             gamesListView.ItemsSource = _games;
 

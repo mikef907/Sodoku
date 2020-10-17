@@ -57,35 +57,23 @@ namespace Sudoku_UI.Views
             InitializeComponent();
             DeviceDisplay.KeepScreenOn = true;
             BindingContext = this;
-            ShowWorkbench = false;
-
-            gameStack.IsVisible = false;
-            gameStack.HeightRequest = 0;
-            startStack.IsVisible = false;
-            startStack.HeightRequest = 0;
-
-            ToolbarItems.Clear();
-
             _db = DependencyService.Get<ISQLiteDb>().GetConnection();
-
-            seedEntry.Text = new Random().Next().ToString();
 
             StartOverCommand = new Command(async () =>
             {
-                var seed = await DisplayPromptAsync("Start Over?", "Enter a seed value to generate a new puzzle.", initialValue: new Random().Next().ToString());
+                var seed = await DisplayPromptAsync("Start Over?", 
+                    "Enter a seed value to generate a new puzzle.", 
+                    initialValue: new Random().Next().ToString());
 
                 if (!string.IsNullOrEmpty(seed))
-                { 
+                {
                     await InsertGameAsync();
                     int _seed;
                     if (int.TryParse(seed, out _seed))
                         await ShowBoard(_seed);
                     else
                         await ShowBoard();
-
-
                 }
-                    
             });
 
             CopySeedCommand = new Command(async () =>
@@ -96,13 +84,32 @@ namespace Sudoku_UI.Views
 
             Disappearing += SudokuPage_Disappearing;
             Appearing += SudokuPage_Appearing;
-
-            Deserialize();
         }
 
-        private async void Deserialize() {
+        protected override async void OnAppearing()
+        {
             IsBusy = true;
+            ShowWorkbench = false;
 
+            gameStack.IsVisible = false;
+            gameStack.HeightRequest = 0;
+
+            startStack.IsVisible = false;
+
+            ToolbarItems.Clear();
+
+            seedEntry.Text = new Random().Next().ToString();
+
+            if (!await Deserialize())
+            {
+                startStack.IsVisible = true;
+            }
+
+            IsBusy = false;
+            base.OnAppearing();
+        }
+
+        private async Task<bool> Deserialize() {
             var current = await _db.Table<CurrentGame>().FirstOrDefaultAsync();
 
             if (current != null)
@@ -114,14 +121,9 @@ namespace Sudoku_UI.Views
                 InitGameState();
                 InitGameTimer(reset: false);
                 InitToolBar();
+                return true;
             }
-            else
-            {
-                startStack.IsVisible = true;
-                startStack.HeightRequest = Device.GetNamedSize(NamedSize.Default, typeof(StackLayout));
-            }
-
-            IsBusy = false;
+            return false;
         }
 
         private async Task InsertGameAsync() {
@@ -147,17 +149,20 @@ namespace Sudoku_UI.Views
             _gameTimer?.StopTimer();
             _gameTimer = null;
 
-            var json = JsonConvert.SerializeObject(sudoku.PuzzleBoard);
-
-            var current = new CurrentGame
+            if (sudoku != null)
             {
-                State = json,
-                Seed = sudoku.Seed,
-                Timer = Timer
-            };
+                var json = JsonConvert.SerializeObject(sudoku.PuzzleBoard);
 
-            await _db.DeleteAllAsync<CurrentGame>();
-            await _db.InsertOrReplaceAsync(current);
+                var current = new CurrentGame
+                {
+                    State = json,
+                    Seed = sudoku.Seed,
+                    Timer = Timer
+                };
+
+                await _db.DeleteAllAsync<CurrentGame>();
+                await _db.InsertOrReplaceAsync(current);
+            }
         }
 
         public async Task InitBoard(int? seed = null)
