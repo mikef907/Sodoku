@@ -173,10 +173,10 @@
     <AndroidResource Include="Resources\sudoku.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\icons8-play%402x.png" />
+    <BundleResource Include="Resources\icons8_play%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\icons8-play%403x.png" />
+    <BundleResource Include="Resources\icons8_play%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\icons8_play.png" />
@@ -190,7 +190,15 @@
   <ItemGroup>
     <BundleResource Include="Resources\original.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8_list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8_list%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8_list%403x.png" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties XamarinHotReloadDebuggerTimeoutExceptionSudokuUIiOSHideInfoBar="True" />

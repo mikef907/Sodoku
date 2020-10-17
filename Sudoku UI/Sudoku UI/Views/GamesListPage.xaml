@@ -8,7 +8,8 @@
                 <Grid>
                     <Label Grid.Column="0" Text="Seed" FontAttributes="Bold"></Label>
                     <Label Grid.Column="1" Text="Time" FontAttributes="Bold"></Label>
-                    <Label Grid.Column="2" Text="Solved" FontAttributes="Bold"></Label>
+                    <Label Grid.Column="2" Text="Attempt" FontAttributes="Bold"></Label>
+                    <Label Grid.Column="3" Text="Solved" FontAttributes="Bold"></Label>
                 </Grid>
             </ListView.Header>
             <ListView.ItemTemplate>
@@ -17,7 +18,8 @@
                         <Grid>
                             <Label Grid.Column="0" Text="{Binding Seed}"></Label>
                             <Label Grid.Column="1" Text="{Binding Time}"></Label>
-                            <Label Grid.Column="2" Text="{Binding Solved}"></Label>
+                            <Label Grid.Column="2" Text="{Binding Attempt}"></Label>
+                            <Label Grid.Column="3" Text="{Binding Solved}"></Label>
                         </Grid>
                         <ViewCell.ContextActions>
                             <MenuItem Text="Copy Seed" Clicked="Copy_Seed_Clicked" CommandParameter="{Binding Seed}"></MenuItem>

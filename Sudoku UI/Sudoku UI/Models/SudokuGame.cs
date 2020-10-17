@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using Sudoku_Lib;
 using System;
 
 namespace Sudoku_UI.Models
@@ -12,5 +13,14 @@ namespace Sudoku_UI.Models
         public int Seed { get; set; }
         public int Attempt { get; set; }
         public bool Solved { get; set; }
+    }
+
+    public class CurrentGame
+    { 
+        [PrimaryKey]
+        public int? Id { get; set; }
+        public int Seed { get; set; }
+        public string State { get; set; }
+        public TimeSpan Timer { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Sudoku_Lib;
+﻿using Newtonsoft.Json;
+using SQLite;
+using Sudoku_Lib;
 using Sudoku_UI.Models;
 using SudokuUI.Persistence;
 using System;
@@ -21,6 +23,7 @@ namespace Sudoku_UI.Views
         private TimeSpan _timer;
         private int _seed;
         private bool _showWorkBench;
+        private SQLiteAsyncConnection _db;
 
         public TimeSpan Timer { 
             get => _timer; 
@@ -55,26 +58,34 @@ namespace Sudoku_UI.Views
             DeviceDisplay.KeepScreenOn = true;
             BindingContext = this;
             ShowWorkbench = false;
+
             gameStack.IsVisible = false;
             gameStack.HeightRequest = 0;
+            startStack.IsVisible = false;
+            startStack.HeightRequest = 0;
+
             ToolbarItems.Clear();
+
+            _db = DependencyService.Get<ISQLiteDb>().GetConnection();
+
+            seedEntry.Text = new Random().Next().ToString();
 
             StartOverCommand = new Command(async () =>
             {
-                if (await DisplayAlert("Giving Up?", "Do you want to start over?", "Yes", "No"))
-                {
-                    var db = DependencyService.Get<ISQLiteDb>().GetConnection();
+                var seed = await DisplayPromptAsync("Start Over?", "Enter a seed value to generate a new puzzle.", initialValue: new Random().Next().ToString());
 
-                    var game = new SudokuGame {
-                        Time = Timer,
-                        Seed = sudoku.Seed,
-                        Solved = sudoku.PuzzleBoard.IsSolved(),
-                        Attempt = await db.Table<SudokuGame>().Where(s => s.Seed == sudoku.Seed).CountAsync() + 1
-                    };
+                if (!string.IsNullOrEmpty(seed))
+                { 
+                    await InsertGameAsync();
+                    int _seed;
+                    if (int.TryParse(seed, out _seed))
+                        await ShowBoard(_seed);
+                    else
+                        await ShowBoard();
 
-                    await db.InsertAsync(game);
-                    await ShowBoard();
+
                 }
+                    
             });
 
             CopySeedCommand = new Command(async () =>
@@ -85,50 +96,79 @@ namespace Sudoku_UI.Views
 
             Disappearing += SudokuPage_Disappearing;
             Appearing += SudokuPage_Appearing;
+
+            Deserialize();
+        }
+
+        private async void Deserialize() {
+            IsBusy = true;
+
+            var current = await _db.Table<CurrentGame>().FirstOrDefaultAsync();
+
+            if (current != null)
+            {
+                SudokuCellData[,] state = JsonConvert.DeserializeObject<SudokuCellData[,]>(current.State);
+                sudoku = new Sudoku(state, current.Seed);
+                Timer = current.Timer;
+                InitGrid();
+                InitGameState();
+                InitGameTimer(reset: false);
+                InitToolBar();
+            }
+            else
+            {
+                startStack.IsVisible = true;
+                startStack.HeightRequest = Device.GetNamedSize(NamedSize.Default, typeof(StackLayout));
+            }
+
+            IsBusy = false;
+        }
+
+        private async Task InsertGameAsync() {
+
+            var game = new SudokuGame
+            {
+                Time = Timer,
+                Seed = sudoku.Seed,
+                Solved = sudoku.PuzzleBoard.IsSolved(),
+                Attempt = await _db.Table<SudokuGame>().Where(s => s.Seed == sudoku.Seed).CountAsync() + 1
+            };
+
+            await _db.InsertAsync(game);
         }
 
         private void SudokuPage_Appearing(object sender, EventArgs e)
         {
-            _gameTimer = new GameTimer(() => Timer = Timer.Add(TimeSpan.FromSeconds(1)));
-            _gameTimer.InitTimer();
-            _gameTimer?.StartTimer();
+            InitGameTimer(reset: false);
         }
 
-        private void SudokuPage_Disappearing(object sender, EventArgs e)
+        private async void SudokuPage_Disappearing(object sender, EventArgs e)
         {
             _gameTimer?.StopTimer();
             _gameTimer = null;
+
+            var json = JsonConvert.SerializeObject(sudoku.PuzzleBoard);
+
+            var current = new CurrentGame
+            {
+                State = json,
+                Seed = sudoku.Seed,
+                Timer = Timer
+            };
+
+            await _db.DeleteAllAsync<CurrentGame>();
+            await _db.InsertOrReplaceAsync(current);
         }
 
-        public async Task InitBoard()
+        public async Task InitBoard(int? seed = null)
         {
             sudoku = new Sudoku();
-            if (!string.IsNullOrEmpty(seedEntry.Text))
-            {
-                int seed;
-                if (int.TryParse(seedEntry.Text, out seed))
-                {
-                    await sudoku.Init(seed);
-                }
-                else
-                    await sudoku.Init();
-            }
-            else
-                await sudoku.Init();
+            await sudoku.Init(seed);
         }
 
-        public async Task ShowBoard()
+        public void InitGrid()
         {
-            IsBusy = true;
-            _gameTimer?.Dispose();
             grid.Children.Clear();
-            _selectedCell = null;
-            ShowWorkbench = false;
-
-            await InitBoard();
-
-            seedEntry.Text = null;
-
             var tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += TapGesture_Tapped;
 
@@ -152,7 +192,7 @@ namespace Sudoku_UI.Views
                         FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) / 1.4,
                         HeightRequest = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) * 1.8,
                         LineBreakMode = LineBreakMode.CharacterWrap,
-                        Text = string.Join(" ", sudoku.PuzzleBoard[i,j].Data)
+                        Text = string.Join(" ", sudoku.PuzzleBoard[i, j].Data)
                     };
 
                     var entry = new Label()
@@ -173,18 +213,50 @@ namespace Sudoku_UI.Views
                     grid.Children.Add(stack, j, i);
                 }
             }
+        }
+
+        private void InitGameState()
+        {
+            seedEntry.Text = null;
+            _selectedCell = null;
+            ShowWorkbench = false;
             Seed = sudoku.Seed;
-            _gameTimer = new GameTimer(SetGameTime());
-            _gameTimer.InitTimer();
 
             startStack.IsVisible = false;
             startStack.HeightRequest = 0;
 
             gameStack.IsVisible = true;
             gameStack.HeightRequest = Device.GetNamedSize(NamedSize.Default, typeof(StackLayout));
+        }
+
+        private void InitGameTimer(bool reset = false)
+        {
+            _gameTimer?.Dispose();
+            _gameTimer = new GameTimer(SetGameTime(reset));
+            _gameTimer.InitTimer();
+            _gameTimer.StartTimer();
+        }
+
+        public void InitToolBar()
+        {
+            ToolbarItems.Clear();
+            ToolbarItems.Add(new ToolbarItem { Text = "Start Over", Command = StartOverCommand });
+            ToolbarItems.Add(new ToolbarItem { Text = "Copy Seed", Command = CopySeedCommand });
+        }
+
+        private async Task ShowBoard(int? seed = null)
+        {
+            IsBusy = true;
+            
+            await InitBoard(seed);
+
+            InitGrid();
+
+            InitGameState();
+
+            InitGameTimer(reset: true);
 
             IsBusy = false;
-            _gameTimer.StartTimer();
         }
 
         private void TapGesture_Tapped(object sender, EventArgs e)
@@ -226,12 +298,13 @@ namespace Sudoku_UI.Views
             return (evenRow && evenCol) || center ? 0.1 : 0.2;
         }
 
-        private Action SetGameTime()
+        private Action SetGameTime(bool reset = false)
         {
-            Timer = TimeSpan.FromSeconds(0);
+            if(reset)
+                Timer = TimeSpan.FromSeconds(0);
+
             return () => Timer = Timer.Add(TimeSpan.FromSeconds(1));
         }
-
 
         private bool InputValue(string textValue, int row, int col)
         {
@@ -257,7 +330,8 @@ namespace Sudoku_UI.Views
                 if (sudoku.PuzzleBoard.IsSolved())
                 {
                     _gameTimer.StopTimer();
-                    await DisplayAlert("Completed!", $"Your time for the seed {Seed} is {Timer}", "PEACE!");
+                    await DisplayAlert("Completed!", $"Your time for the seed {Seed} is {Timer}", "Start Over");
+                    await InsertGameAsync();
                     await ShowBoard();
                 }
                 else
@@ -269,10 +343,14 @@ namespace Sudoku_UI.Views
 
         private async void StartGame(object sender, EventArgs e)
         {
-            await ShowBoard();
-            ToolbarItems.Clear();
-            ToolbarItems.Add(new ToolbarItem { Text = "Start Over", Command = StartOverCommand });
-            ToolbarItems.Add(new ToolbarItem { Text = "Copy Seed", Command = CopySeedCommand });
+            int seed;
+
+            if (int.TryParse(seedEntry.Text, out seed))
+                await ShowBoard(seed);
+            else
+                await ShowBoard();
+
+            InitToolBar();
         }
 
         private void ToggleValue(object sender, EventArgs e)
@@ -294,9 +372,9 @@ namespace Sudoku_UI.Views
 
             var _ = values.Data.ToList();
 
-            values.Data.Clear();
-
             _.Sort();
+
+            values.Data.Clear();
 
             foreach (int val in _)
             {

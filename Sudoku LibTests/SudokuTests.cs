@@ -8,7 +8,11 @@ namespace Sudoku_Lib.Tests
     public class SudokuTests
     {
         Sudoku sudoku;
-        public SudokuTests() => sudoku = new Sudoku();
+        public SudokuTests()
+        {
+            sudoku = new Sudoku();
+            sudoku.InitEmptyPuzzleBoard();
+        }
 
         [Fact()]
         public void SudokuCompletedFlagShouldInitFalse()
@@ -25,7 +29,8 @@ namespace Sudoku_Lib.Tests
         [Fact()]
         public void ShouldBeAbleToReadElement()
         {
-            Assert.Null(sudoku.PuzzleBoard[0, 0]);
+            Assert.IsType<SudokuCellData>(sudoku.PuzzleBoard[0, 0]);
+            Assert.Null(sudoku.PuzzleBoard[0, 0].Value);
         }
 
         [Theory()]
@@ -123,7 +128,7 @@ namespace Sudoku_Lib.Tests
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    sudoku.PuzzleBoard[i, j].Value = c++;
+                    sudoku.PuzzleBoard[i, j] = new SudokuCellData(i, j, c++);
                     if (c > 9) c = 1;
                 }
                 c = c + 3;
@@ -192,7 +197,7 @@ namespace Sudoku_Lib.Tests
 
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    Assert.Equal(sudoku.PuzzleBoard[i, j], _sudoku.PuzzleBoard[i, j]);
+                    Assert.Equal(sudoku.PuzzleBoard[i, j].Value, _sudoku.PuzzleBoard[i, j].Value);
 
         }
     }

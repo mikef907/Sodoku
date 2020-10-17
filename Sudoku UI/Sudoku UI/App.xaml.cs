@@ -1,8 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using Sudoku_UI.Services;
-using Sudoku_UI.Views;
+﻿using Xamarin.Forms;
 using SudokuUI.Persistence;
 using Sudoku_UI.Models;
 
@@ -14,15 +10,14 @@ namespace Sudoku_UI
         public App()
         {
             InitializeComponent();
-
-            DependencyService.Register<MockDataStore>();
             MainPage = new AppShell();
         }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
             var db = DependencyService.Get<ISQLiteDb>().GetConnection();
-            db.CreateTableAsync<SudokuGame>();
+            await db.CreateTableAsync<SudokuGame>();
+            await db.CreateTableAsync<CurrentGame>();
         }
 
         protected override void OnSleep()

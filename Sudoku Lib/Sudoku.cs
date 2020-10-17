@@ -27,6 +27,12 @@ namespace Sudoku_Lib
             PuzzleBoard = new SudokuCellData[9, 9];
         }
 
+        public Sudoku(SudokuCellData[,] data, int seed) {
+            IsInit = true;
+            PuzzleBoard = data;
+            Seed = seed;
+        }
+
         private int? this[int row, int col]
         {
             get => GameBoard[row, col];
@@ -107,15 +113,22 @@ namespace Sudoku_Lib
             return true;
         }
 
+        public void InitEmptyPuzzleBoard()
+        {
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    PuzzleBoard[i, j] = new SudokuCellData(i, j, null);
+        }
+
         private void InitPuzzleBoard()
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
 #if DEBUG
-                    PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null : GameBoard[i, j]);
+                    //PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null : GameBoard[i, j]);
 
-            //PuzzleBoard[i, j] = new SudokuCellData(i, j, GameBoard[i, j]);
-            //PuzzleBoard[0, 0].Value = null;
+                    PuzzleBoard[i, j] = new SudokuCellData(i, j, GameBoard[i, j]);
+            PuzzleBoard[0, 0].Value = null;
 #else
             PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null :  GameBoard[i, j]);
 #endif
@@ -127,7 +140,7 @@ namespace Sudoku_Lib
 
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    if (PuzzleBoard[i, j] == null)
+                    if (PuzzleBoard[i, j].Value == null)
                         count++;
 
             return count;
