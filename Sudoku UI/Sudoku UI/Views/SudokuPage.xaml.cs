@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using Xamarin.Forms.Markup;
 using Xamarin.Forms.Xaml;
 
 namespace Sudoku_UI.Views
@@ -268,10 +267,8 @@ namespace Sudoku_UI.Views
             {
                 var _selectedContext = _selectedCell.BindingContext as SudokuCellData;
 
-                grid.Children.Where(c => Grid.GetColumn(c) == _selectedContext.Col)
-                    .ForEach(c => c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
-                grid.Children.Where(c => Grid.GetRow(c) == _selectedContext.Row)
-                    .ForEach(c => c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
+                grid.Children.ForEach(c =>
+                    c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
             }
 
             _selectedCell = sender as AbsoluteLayout;
@@ -280,6 +277,18 @@ namespace Sudoku_UI.Views
 
             grid.Children.Where(c => Grid.GetColumn(c) == context.Col).ForEach(c => c.BackgroundColor = Color.LightSalmon);
             grid.Children.Where(c => Grid.GetRow(c) == context.Row).ForEach(c => c.BackgroundColor = Color.LightSalmon);
+
+            if (context.Value.HasValue)
+                grid.Children.ForEach(c =>
+                {
+                    var cell = c as AbsoluteLayout;
+                    var _ = cell.BindingContext as SudokuCellData;
+                    if (_.Value == context.Value)
+                    {
+                        cell.BackgroundColor = Color.LightSalmon;
+                    }
+                });
+
             _selectedCell.BackgroundColor = Color.Yellow;
 
             numberStrip.Children.ForEach(child =>
@@ -406,9 +415,22 @@ namespace Sudoku_UI.Views
             if (InputValue(value, data.Row, data.Col))
             {
                 (_selectedCell.Children[1] as Label).Text = value;
+                int _value = Convert.ToInt32(value);
+                grid.Children.ForEach(c =>
+                {
+                    var cell = c as AbsoluteLayout;
+                    var _ = cell.BindingContext as SudokuCellData;
+                    
+                    if (_.Value == _value)
+                    {
+                        cell.BackgroundColor = Color.LightSalmon;
+                    }
+                });
                 entryCell.Unfocus();
                 await CheckBoardState();
             }
+
+
             entryCell.Unfocus();
         }
     }
