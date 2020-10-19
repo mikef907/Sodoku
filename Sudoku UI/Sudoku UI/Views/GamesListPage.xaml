@@ -2,8 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Sudoku_UI.Views.GamesListPage">
-    <ContentPage.Content>
-        <ListView x:Name="gamesListView">
+
+    <StackLayout>
+        <Label HorizontalOptions="Center">
+            <Label.Text>
+                <OnPlatform x:TypeArguments="x:String"
+                    Android="Tap and hold a row to see more options"
+                    iOS="Swipe left on an row to see more options">
+                </OnPlatform>
+            </Label.Text>
+        </Label>      
+        <ListView x:Name="gamesListView" BackgroundColor="White">
             <ListView.Header>
                 <Grid>
                     <Label Grid.Column="0" Text="Seed" FontAttributes="Bold"></Label>
@@ -29,5 +38,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </ContentPage.Content>
+    </StackLayout>
 </ContentPage>

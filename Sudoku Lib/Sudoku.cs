@@ -171,6 +171,7 @@ namespace Sudoku_Lib
     {
         public readonly int Row;
         public readonly int Col;
+        public bool UserInput { get; set; }
         public ObservableCollection<int> Data = new ObservableCollection<int>();
 
         private int? _value;
@@ -180,6 +181,7 @@ namespace Sudoku_Lib
             set {
                 if (_value == value) return;
                 _value = value;
+                UserInput = true;
                 OnPropertyChanged();
             }
         }
@@ -195,6 +197,7 @@ namespace Sudoku_Lib
             Row = row;
             Col = col;
             _value = value;
+            // UserInput = false;
         }
 
     }

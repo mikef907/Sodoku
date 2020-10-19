@@ -82,8 +82,6 @@ namespace Sudoku_UI.Views
                 await DisplayAlert("Seed Copied", $"Seed {Seed} copied to clipboard", "Gee, thanks");
             });
 
-            Disappearing += SudokuPage_Disappearing;
-            Appearing += SudokuPage_Appearing;
         }
 
         protected override async void OnAppearing()
@@ -105,8 +103,32 @@ namespace Sudoku_UI.Views
                 startStack.IsVisible = true;
             }
 
+            InitGameTimer(reset: false);
+
             IsBusy = false;
             base.OnAppearing();
+        }
+
+        protected override async void OnDisappearing()
+        {
+            _gameTimer?.StopTimer();
+            _gameTimer = null;
+
+            if (sudoku != null)
+            {
+                var json = JsonConvert.SerializeObject(sudoku.PuzzleBoard);
+
+                var current = new CurrentGame
+                {
+                    State = json,
+                    Seed = sudoku.Seed,
+                    Timer = Timer
+                };
+
+                await _db.DeleteAllAsync<CurrentGame>();
+                await _db.InsertOrReplaceAsync(current);
+            }
+            base.OnDisappearing();
         }
 
         private async Task<bool> Deserialize() {
@@ -139,32 +161,6 @@ namespace Sudoku_UI.Views
             await _db.InsertAsync(game);
         }
 
-        private void SudokuPage_Appearing(object sender, EventArgs e)
-        {
-            InitGameTimer(reset: false);
-        }
-
-        private async void SudokuPage_Disappearing(object sender, EventArgs e)
-        {
-            _gameTimer?.StopTimer();
-            _gameTimer = null;
-
-            if (sudoku != null)
-            {
-                var json = JsonConvert.SerializeObject(sudoku.PuzzleBoard);
-
-                var current = new CurrentGame
-                {
-                    State = json,
-                    Seed = sudoku.Seed,
-                    Timer = Timer
-                };
-
-                await _db.DeleteAllAsync<CurrentGame>();
-                await _db.InsertOrReplaceAsync(current);
-            }
-        }
-
         public async Task InitBoard(int? seed = null)
         {
             sudoku = new Sudoku();
@@ -174,11 +170,13 @@ namespace Sudoku_UI.Views
         public void InitGrid()
         {
             grid.Children.Clear();
+            grid.RowDefinitions.Clear();
             var tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += TapGesture_Tapped;
 
             for (int i = 0; i < 9; i++)
             {
+                grid.RowDefinitions.Add(new RowDefinition { Height = Device.GetNamedSize(NamedSize.Default, typeof(Label)) * 2.7 });
                 for (int j = 0; j < 9; j++)
                 {
                     var stack = new AbsoluteLayout()
@@ -187,17 +185,11 @@ namespace Sudoku_UI.Views
                         BindingContext = sudoku.PuzzleBoard[i, j]
                     };
 
-                    if (!sudoku.PuzzleBoard[i, j].Value.HasValue)
-                    {
-                        stack.GestureRecognizers.Add(tapGesture);
-                    }
-
                     var guesses = new Label
                     {
-                        FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) / 1.4,
-                        HeightRequest = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) * 1.8,
-                        LineBreakMode = LineBreakMode.CharacterWrap,
-                        Text = string.Join(" ", sudoku.PuzzleBoard[i, j].Data)
+                        FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)) * 1.1,
+                        Text = string.Join(" ", sudoku.PuzzleBoard[i, j].Data),
+                        VerticalOptions = LayoutOptions.Start
                     };
 
                     var entry = new Label()
@@ -208,14 +200,19 @@ namespace Sudoku_UI.Views
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
 
-
-                    if (sudoku.PuzzleBoard[i, j].Value.HasValue)
+                    if (!sudoku.PuzzleBoard[i, j].Value.HasValue || sudoku.PuzzleBoard[i, j].UserInput)
+                    {
+                        stack.GestureRecognizers.Add(tapGesture);
+                        entry.TextColor = gridColor;
+                    }
+                    else
                         entry.FontAttributes = FontAttributes.Bold;
 
-                    stack.Children.Add(guesses, new Rectangle(0, 0, 1, 0.5), AbsoluteLayoutFlags.All);
+                    stack.Children.Add(guesses, new Rectangle(0, 0, 1, 0.4), AbsoluteLayoutFlags.All);
                     stack.Children.Add(entry, new Rectangle(0, 0.5, 1, 1), AbsoluteLayoutFlags.All);
 
                     grid.Children.Add(stack, j, i);
+                   
                 }
             }
         }
@@ -322,8 +319,11 @@ namespace Sudoku_UI.Views
             }
             else if (int.TryParse(textValue, out value))
             {
-                sudoku.PuzzleBoard[row, col].Value = value;
-                return true;
+                if (value > 0)
+                { 
+                    sudoku.PuzzleBoard[row, col].Value = value;
+                    return true;             
+                }
             }
             return false;
         }
