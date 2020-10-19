@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using Xamarin.Forms.Markup;
 using Xamarin.Forms.Xaml;
 
 namespace Sudoku_UI.Views
@@ -266,13 +267,20 @@ namespace Sudoku_UI.Views
             if (_selectedCell != null)
             {
                 var _selectedContext = _selectedCell.BindingContext as SudokuCellData;
-                _selectedCell.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col));
+
+                grid.Children.Where(c => Grid.GetColumn(c) == _selectedContext.Col)
+                    .ForEach(c => c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
+                grid.Children.Where(c => Grid.GetRow(c) == _selectedContext.Row)
+                    .ForEach(c => c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
             }
 
             _selectedCell = sender as AbsoluteLayout;
-            _selectedCell.BackgroundColor = Color.Yellow;
 
             var context = _selectedCell.BindingContext as SudokuCellData;
+
+            grid.Children.Where(c => Grid.GetColumn(c) == context.Col).ForEach(c => c.BackgroundColor = Color.LightSalmon);
+            grid.Children.Where(c => Grid.GetRow(c) == context.Row).ForEach(c => c.BackgroundColor = Color.LightSalmon);
+            _selectedCell.BackgroundColor = Color.Yellow;
 
             numberStrip.Children.ForEach(child =>
             {
@@ -290,6 +298,7 @@ namespace Sudoku_UI.Views
 
             valueEntry.Text = sudoku.PuzzleBoard[context.Row, context.Col].Value?.ToString();
             ShowWorkbench = true;
+
         }
 
         private double GetAccent(int row, int col)
