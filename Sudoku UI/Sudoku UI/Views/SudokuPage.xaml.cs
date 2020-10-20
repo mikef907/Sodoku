@@ -18,6 +18,10 @@ namespace Sudoku_UI.Views
     {
         Sudoku sudoku;
         Color gridColor = Color.FromHex("#894357");
+
+        private Color bgAccentA;
+        private Color bgAccentB;
+
         private GameTimer _gameTimer;
         private AbsoluteLayout _selectedCell;
         private TimeSpan _timer;
@@ -58,6 +62,9 @@ namespace Sudoku_UI.Views
             DeviceDisplay.KeepScreenOn = true;
             BindingContext = this;
             _db = DependencyService.Get<ISQLiteDb>().GetConnection();
+
+            bgAccentA = new Color(gridColor.R, gridColor.G, gridColor.B, 0.1);
+            bgAccentB = new Color(gridColor.R, gridColor.G, gridColor.B, 0.2);
 
             StartOverCommand = new Command(async () =>
             {
@@ -181,7 +188,7 @@ namespace Sudoku_UI.Views
                 {
                     var stack = new AbsoluteLayout()
                     {
-                        BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(i, j)),
+                        BackgroundColor = GetBGAccent(i, j),
                         BindingContext = sudoku.PuzzleBoard[i, j]
                     };
 
@@ -266,9 +273,7 @@ namespace Sudoku_UI.Views
             if (_selectedCell != null)
             {
                 var _selectedContext = _selectedCell.BindingContext as SudokuCellData;
-
-                grid.Children.ForEach(c =>
-                    c.BackgroundColor = new Color(gridColor.R, gridColor.G, gridColor.B, GetAccent(_selectedContext.Row, _selectedContext.Col)));
+                grid.Children.ForEach(c => c.BackgroundColor = GetBGAccent(Grid.GetColumn(c), Grid.GetRow(c)));
             }
 
             _selectedCell = sender as AbsoluteLayout;
@@ -279,15 +284,7 @@ namespace Sudoku_UI.Views
             grid.Children.Where(c => Grid.GetRow(c) == context.Row).ForEach(c => c.BackgroundColor = Color.LightSalmon);
 
             if (context.Value.HasValue)
-                grid.Children.ForEach(c =>
-                {
-                    var cell = c as AbsoluteLayout;
-                    var _ = cell.BindingContext as SudokuCellData;
-                    if (_.Value == context.Value)
-                    {
-                        cell.BackgroundColor = Color.LightSalmon;
-                    }
-                });
+                HighlightSameNumber(context);
 
             _selectedCell.BackgroundColor = Color.Yellow;
 
@@ -310,12 +307,12 @@ namespace Sudoku_UI.Views
 
         }
 
-        private double GetAccent(int row, int col)
+        private Color GetBGAccent(int row, int col)
         {
             var evenRow = row / 3 == 0 || row / 3 == 2;
             var evenCol = col / 3 == 0 || col / 3 == 2;
             var center = row / 3 == 1 && col / 3 == 1;
-            return (evenRow && evenCol) || center ? 0.1 : 0.2;
+            return (evenRow && evenCol) || center ? bgAccentA : bgAccentB;
         }
 
         private Action SetGameTime(bool reset = false)
@@ -409,29 +406,44 @@ namespace Sudoku_UI.Views
 
         private async void EntryCell_Completed(object sender, EventArgs e)
         {
-            var data = _selectedCell.BindingContext as SudokuCellData;
+            var context = _selectedCell.BindingContext as SudokuCellData;
             var entryCell = sender as Entry;
             var value = entryCell.Text;
-            if (InputValue(value, data.Row, data.Col))
+            if (InputValue(value, context.Row, context.Col))
             {
                 (_selectedCell.Children[1] as Label).Text = value;
-                int _value = Convert.ToInt32(value);
-                grid.Children.ForEach(c =>
+                
+                HighlightSameNumber(context);
+
+                if(!string.IsNullOrEmpty(value))
+                {
+                    await CheckBoardState();
+                    entryCell.Unfocus();
+                }
+            }
+        }
+
+        private void HighlightSameNumber(SudokuCellData context) {
+            grid.Children.ForEach(c =>
+            {
+                var row = Grid.GetRow(c);
+                var col = Grid.GetColumn(c);
+
+                if (row != context.Row && context.Col != col)
                 {
                     var cell = c as AbsoluteLayout;
                     var _ = cell.BindingContext as SudokuCellData;
                     
-                    if (_.Value == _value)
+                    if (context.Value == null)
+                    {
+                        cell.BackgroundColor = GetBGAccent(row, col);
+                    }
+                    else if (_.Value == context.Value)
                     {
                         cell.BackgroundColor = Color.LightSalmon;
                     }
-                });
-                entryCell.Unfocus();
-                await CheckBoardState();
-            }
-
-
-            entryCell.Unfocus();
+                }
+            });
         }
     }
 }
