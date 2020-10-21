@@ -354,7 +354,7 @@ namespace Sudoku_UI.Views
                 if (sudoku.PuzzleBoard.IsSolved())
                 {
                     _gameTimer.StopTimer();
-                    await DisplayAlert("Completed!", $"Your time for the seed {Seed} is {Timer}", "Start Over");
+                    await DisplayAlert("Solved!", $"Nice Job!  Your time for the seed {Seed} is {Timer}.", "Start new puzzle");
                     await InsertGameAsync();
                     await ShowBoard();
                 }
