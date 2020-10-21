@@ -207,11 +207,10 @@ namespace Sudoku_UI.Views
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
 
+                    stack.GestureRecognizers.Add(tapGesture);
+
                     if (sudoku.PuzzleBoard[i, j].Editable)
-                    {
-                        stack.GestureRecognizers.Add(tapGesture);
                         entry.TextColor = gridColor;
-                    }
                     else
                         entry.FontAttributes = FontAttributes.Bold;
 
@@ -288,22 +287,27 @@ namespace Sudoku_UI.Views
 
             _selectedCell.BackgroundColor = Color.Yellow;
 
-            numberStrip.Children.ForEach(child =>
+            if (context.Editable)
             {
-                var btn = child as Button;
-                var number = Convert.ToInt32(btn.Text);
-                if (context.Data.Contains(number))
+                numberStrip.Children.ForEach(child =>
                 {
-                    btn.TextColor = Color.DarkGreen;
-                }
-                else
-                {
-                    btn.TextColor = Color.LightGray;
-                }
-            });
+                    var btn = child as Button;
+                    var number = Convert.ToInt32(btn.Text);
+                    if (context.Data.Contains(number))
+                    {
+                        btn.TextColor = Color.DarkGreen;
+                    }
+                    else
+                    {
+                        btn.TextColor = Color.LightGray;
+                    }
+                });
 
-            valueEntry.Text = sudoku.PuzzleBoard[context.Row, context.Col].Value?.ToString();
-            ShowWorkbench = true;
+                valueEntry.Text = sudoku.PuzzleBoard[context.Row, context.Col].Value?.ToString();
+                ShowWorkbench = true;
+            }
+            else ShowWorkbench = false;
+
 
         }
 
