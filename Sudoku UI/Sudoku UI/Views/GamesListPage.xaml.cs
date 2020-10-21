@@ -35,19 +35,24 @@ namespace Sudoku_UI.Views
 
         private async void Copy_Seed_Clicked(object sender, EventArgs e)
         {
-            var menuItem = sender as MenuItem;
-            var seed = menuItem.CommandParameter as int?;
-            await Clipboard.SetTextAsync(seed.ToString());
-            await DisplayAlert("Seed Copied", $"Seed {seed} copied to clipboard", "Gee, thanks");
+            var menuItem = (sender as MenuItem).CommandParameter as SudokuGame;
+
+            if (menuItem.Solved)
+            {
+                await Share.RequestAsync($"I finished a timed sudoku puzzle seed {menuItem.Seed} in {menuItem.Time}, can you beat that?");
+            }
+            else
+            {
+                await Share.RequestAsync($"Try this timed sudoku puzzle seed {menuItem.Seed}");
+            }
         }
 
         private async void Delete_Clicked(object sender, EventArgs e)
         {
-            var menuItem = sender as MenuItem;
-            var game = menuItem.CommandParameter as SudokuGame;
+            var menuItem = (sender as MenuItem).CommandParameter as SudokuGame;
 
-            _games.Remove(game);
-            await db.DeleteAsync(game);
+            _games.Remove(menuItem);
+            await db.DeleteAsync(menuItem);
         }
     }
 }

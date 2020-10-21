@@ -31,7 +31,7 @@
                             <Label Grid.Column="3" Text="{Binding Solved}"></Label>
                         </Grid>
                         <ViewCell.ContextActions>
-                            <MenuItem Text="Copy Seed" Clicked="Copy_Seed_Clicked" CommandParameter="{Binding Seed}"></MenuItem>
+                            <MenuItem Text="Share" Clicked="Copy_Seed_Clicked" CommandParameter="{Binding .}"></MenuItem>
                             <MenuItem Text="Delete" Clicked="Delete_Clicked" IsDestructive="True" CommandParameter="{Binding .}"></MenuItem>
                         </ViewCell.ContextActions>
                     </ViewCell>

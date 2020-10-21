@@ -54,7 +54,7 @@ namespace Sudoku_UI.Views
         }
 
         public Command StartOverCommand { get; }
-        public Command CopySeedCommand { get; }
+        public Command ShareSeedCommand { get; }
 
         public SudokuPage()
         {
@@ -83,10 +83,9 @@ namespace Sudoku_UI.Views
                 }
             });
 
-            CopySeedCommand = new Command(async () =>
+            ShareSeedCommand = new Command(async () =>
             {
-                await Clipboard.SetTextAsync(Seed.ToString());
-                await DisplayAlert("Seed Copied", $"Seed {Seed} copied to clipboard", "Gee, thanks");
+                await Share.RequestAsync($"I'm playing a timed sudoku puzzle with a seed of {Seed}");
             });
 
         }
@@ -178,6 +177,7 @@ namespace Sudoku_UI.Views
         {
             grid.Children.Clear();
             grid.RowDefinitions.Clear();
+
             var tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += TapGesture_Tapped;
 
@@ -249,7 +249,7 @@ namespace Sudoku_UI.Views
         {
             ToolbarItems.Clear();
             ToolbarItems.Add(new ToolbarItem { Text = "Start Over", Command = StartOverCommand });
-            ToolbarItems.Add(new ToolbarItem { Text = "Copy Seed", Command = CopySeedCommand });
+            ToolbarItems.Add(new ToolbarItem { Text = "Share", Command = ShareSeedCommand });
         }
 
         private async Task ShowBoard(int? seed = null)
