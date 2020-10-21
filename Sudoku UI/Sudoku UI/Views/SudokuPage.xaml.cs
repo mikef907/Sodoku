@@ -383,6 +383,7 @@ namespace Sudoku_UI.Views
             var label = (_selectedCell.Children[0] as Label);
             var values = _selectedCell.BindingContext as SudokuCellData;
             var number = Convert.ToInt32(btn.Text);
+
             if (values.Data.Contains(number))
             {
                 values.Data.Remove(number);
@@ -394,17 +395,7 @@ namespace Sudoku_UI.Views
                 btn.TextColor = Color.DarkGreen;
             }
 
-            var _ = values.Data.ToList();
-
-            _.Sort();
-
-            values.Data.Clear();
-
-            foreach (int val in _)
-            {
-                values.Data.Add(val);
-            }
-
+            values.Data.Sort();
             label.Text = string.Join(" ", values.Data);
         }
 

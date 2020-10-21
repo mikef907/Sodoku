@@ -170,7 +170,7 @@ namespace Sudoku_Lib
         // public bool UserInput { get; set; }
         public bool Editable { get; private set; }
 
-        public ObservableCollection<int> Data = new ObservableCollection<int>();
+        public List<int> Data = new List<int>();
 
         private int? _value;
         public int? Value
