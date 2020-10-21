@@ -17,10 +17,10 @@ namespace Sudoku_UI.Views
     public partial class SudokuPage : ContentPage
     {
         Sudoku sudoku;
-        Color gridColor = Color.FromHex("#894357");
+        private readonly Color gridColor = Color.FromHex("#894357");
 
-        private Color bgAccentA;
-        private Color bgAccentB;
+        private readonly Color bgAccentA;
+        private readonly Color bgAccentB;
 
         private GameTimer _gameTimer;
         private AbsoluteLayout _selectedCell;
@@ -207,7 +207,7 @@ namespace Sudoku_UI.Views
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
 
-                    if (!sudoku.PuzzleBoard[i, j].Value.HasValue || sudoku.PuzzleBoard[i, j].UserInput)
+                    if (sudoku.PuzzleBoard[i, j].Editable)
                     {
                         stack.GestureRecognizers.Add(tapGesture);
                         entry.TextColor = gridColor;

@@ -117,21 +117,17 @@ namespace Sudoku_Lib
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    PuzzleBoard[i, j] = new SudokuCellData(i, j, null);
+                    PuzzleBoard[i, j] = new SudokuCellData(i, j, true, null);
         }
 
         private void InitPuzzleBoard()
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-#if DEBUG
-                    PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null : GameBoard[i, j]);
-
-                    //PuzzleBoard[i, j] = new SudokuCellData(i, j, GameBoard[i, j]);
-            //PuzzleBoard[0, 0].Value = null;
-#else
-            PuzzleBoard[i, j] = new SudokuCellData(i, j, Random.Next() % 2 == 0 ? null :  GameBoard[i, j]);
-#endif
+                    if (Random.Next() % 2 == 0)
+                        PuzzleBoard[i, j] = new SudokuCellData(i, j, true, null);
+                    else 
+                        PuzzleBoard[i, j] = new SudokuCellData(i, j, false, GameBoard[i, j]);
         }
 
         public int EmptyPuzzleBoardCellsCount()
@@ -171,7 +167,9 @@ namespace Sudoku_Lib
     {
         public readonly int Row;
         public readonly int Col;
-        public bool UserInput { get; set; }
+        // public bool UserInput { get; set; }
+        public bool Editable { get; private set; }
+
         public ObservableCollection<int> Data = new ObservableCollection<int>();
 
         private int? _value;
@@ -181,7 +179,6 @@ namespace Sudoku_Lib
             set {
                 if (_value == value) return;
                 _value = value;
-                UserInput = true;
                 OnPropertyChanged();
             }
         }
@@ -192,12 +189,12 @@ namespace Sudoku_Lib
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
         }
 
-        public SudokuCellData(int row, int col, int? value)
+        public SudokuCellData(int row, int col, bool editable, int? value)
         {
             Row = row;
             Col = col;
             _value = value;
-            // UserInput = false;
+            Editable = editable;
         }
 
     }

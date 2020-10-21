@@ -43,7 +43,7 @@ namespace Sudoku_Lib.Tests
         [InlineData(3, 2, 9)]
         public void ShouldBeAbleToAddIntToGameboard(int row, int col, int value)
         {
-            sudoku.PuzzleBoard[row, col] = new SudokuCellData(row, col, value);
+            sudoku.PuzzleBoard[row, col] = new SudokuCellData(row, col, true, value);
             Assert.Equal(value, sudoku.PuzzleBoard[row, col].Value);
         }
 
@@ -128,7 +128,7 @@ namespace Sudoku_Lib.Tests
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    sudoku.PuzzleBoard[i, j] = new SudokuCellData(i, j, c++);
+                    sudoku.PuzzleBoard[i, j] = new SudokuCellData(i, j, true, c++);
                     if (c > 9) c = 1;
                 }
                 c = c + 3;
