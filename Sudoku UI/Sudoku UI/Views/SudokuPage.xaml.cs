@@ -248,8 +248,8 @@ namespace Sudoku_UI.Views
         public void InitToolBar()
         {
             ToolbarItems.Clear();
-            ToolbarItems.Add(new ToolbarItem { Text = "Start Over", Command = StartOverCommand });
-            ToolbarItems.Add(new ToolbarItem { Text = "Share", Command = ShareSeedCommand });
+            ToolbarItems.Add(new ToolbarItem { IconImageSource = "icons8_restart.png", Command = StartOverCommand });
+            ToolbarItems.Add(new ToolbarItem { IconImageSource = "icons8_share.png", Command = ShareSeedCommand });
         }
 
         private async Task ShowBoard(int? seed = null)

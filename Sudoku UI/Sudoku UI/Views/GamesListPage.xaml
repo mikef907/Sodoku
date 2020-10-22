@@ -15,9 +15,15 @@
         <ListView x:Name="gamesListView" BackgroundColor="White">
             <ListView.Header>
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Text="Seed" FontAttributes="Bold"></Label>
                     <Label Grid.Column="1" Text="Time" FontAttributes="Bold"></Label>
-                    <Label Grid.Column="2" Text="Attempt" FontAttributes="Bold"></Label>
+                    <Label Grid.Column="2" Text="Try" FontAttributes="Bold"></Label>
                     <Label Grid.Column="3" Text="Solved" FontAttributes="Bold"></Label>
                 </Grid>
             </ListView.Header>
@@ -25,14 +31,20 @@
                 <DataTemplate>
                     <ViewCell>
                         <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Text="{Binding Seed}"></Label>
                             <Label Grid.Column="1" Text="{Binding Time}"></Label>
                             <Label Grid.Column="2" Text="{Binding Attempt}"></Label>
                             <Label Grid.Column="3" Text="{Binding Solved}"></Label>
                         </Grid>
                         <ViewCell.ContextActions>
-                            <MenuItem Text="Share" Clicked="Copy_Seed_Clicked" CommandParameter="{Binding .}"></MenuItem>
-                            <MenuItem Text="Delete" Clicked="Delete_Clicked" IsDestructive="True" CommandParameter="{Binding .}"></MenuItem>
+                            <MenuItem Text="Share" Clicked="Copy_Seed_Clicked" IconImageSource="icons8_share_white.png" CommandParameter="{Binding .}"></MenuItem>
+                            <MenuItem Text="Delete" Clicked="Delete_Clicked" IconImageSource="icons8_delete_bin.png" IsDestructive="True" CommandParameter="{Binding .}"></MenuItem>
                         </ViewCell.ContextActions>
                     </ViewCell>
                 </DataTemplate>
