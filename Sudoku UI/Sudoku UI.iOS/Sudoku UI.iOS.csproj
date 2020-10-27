@@ -66,6 +66,8 @@
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <OptimizePNGs>true</OptimizePNGs>
     <MtouchFloat32>true</MtouchFloat32>
+    <CodesignProvision>
+    </CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku UI.Android", "Sudoku
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku UI.iOS", "Sudoku UI\Sudoku UI.iOS\Sudoku UI.iOS.csproj", "{8C2FF546-701C-4B5A-80D5-2435632051A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuWeb", "SudokuWeb\SudokuWeb.csproj", "{C5E1C752-F29A-46B5-8707-8551C00ABC27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{8C2FF546-701C-4B5A-80D5-2435632051A8}.Release|iPhone.Build.0 = Release|iPhone
 		{8C2FF546-701C-4B5A-80D5-2435632051A8}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{8C2FF546-701C-4B5A-80D5-2435632051A8}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|iPhone.Build.0 = Release|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{C5E1C752-F29A-46B5-8707-8551C00ABC27}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

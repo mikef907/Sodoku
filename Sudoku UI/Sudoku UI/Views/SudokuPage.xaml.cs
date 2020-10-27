@@ -25,7 +25,7 @@ namespace Sudoku_UI.Views
         private GameTimer _gameTimer;
         private AbsoluteLayout _selectedCell;
         private TimeSpan _timer;
-        private int _seed;
+        private int? _seed;
         private bool _showWorkBench;
         private SQLiteAsyncConnection _db;
 
@@ -37,7 +37,7 @@ namespace Sudoku_UI.Views
             } 
         }
 
-        public int Seed {
+        public int? Seed {
             get => _seed;
             set {
                 _seed = value;
@@ -56,7 +56,9 @@ namespace Sudoku_UI.Views
         public Command StartOverCommand { get; }
         public Command ShareSeedCommand { get; }
 
-        public SudokuPage()
+        public SudokuPage() : this(null) { }
+
+        public SudokuPage(int? seed = null)
         {
             InitializeComponent();
             DeviceDisplay.KeepScreenOn = true;
@@ -66,18 +68,24 @@ namespace Sudoku_UI.Views
             bgAccentA = new Color(gridColor.R, gridColor.G, gridColor.B, 0.1);
             bgAccentB = new Color(gridColor.R, gridColor.G, gridColor.B, 0.2);
 
+            if(seed.HasValue)
+                _seed = seed.Value;
+
             StartOverCommand = new Command(async () =>
             {
-                var seed = await DisplayPromptAsync("Start Over?", 
+                var val = await DisplayPromptAsync("Start Over?", 
                     "Enter a seed value to generate a new puzzle.", 
                     initialValue: new Random().Next().ToString());
 
-                if (!string.IsNullOrEmpty(seed))
+                if (!string.IsNullOrEmpty(val))
                 {
                     await InsertGameAsync();
                     int _seed;
-                    if (int.TryParse(seed, out _seed))
-                        await ShowBoard(_seed);
+                    if (int.TryParse(val, out _seed))
+                    {
+                        this._seed = _seed;
+                        await ShowBoard();
+                    }
                     else
                         await ShowBoard();
                 }
@@ -85,7 +93,7 @@ namespace Sudoku_UI.Views
 
             ShareSeedCommand = new Command(async () =>
             {
-                await Share.RequestAsync($"I'm playing a timed sudoku puzzle with a seed of {Seed}");
+                await Share.RequestAsync($"I'm playing this sudoku puzzle https://playsudoku.app/seed/{Seed}");
             });
 
         }
@@ -104,7 +112,15 @@ namespace Sudoku_UI.Views
 
             seedEntry.Text = new Random().Next().ToString();
 
-            if (!await Deserialize())
+            if (_seed.HasValue)
+            {
+                await InitBoard();
+                InitGrid();
+                InitGameState();
+                InitGameTimer(reset: true);
+                InitToolBar();
+            }
+            else if (!await Deserialize())
             {
                 startStack.IsVisible = true;
             }
@@ -167,10 +183,10 @@ namespace Sudoku_UI.Views
             await _db.InsertAsync(game);
         }
 
-        public async Task InitBoard(int? seed = null)
+        public async Task InitBoard()
         {
             sudoku = new Sudoku();
-            await sudoku.Init(seed);
+            await sudoku.Init(_seed);
         }
 
         public void InitGrid()
@@ -252,11 +268,11 @@ namespace Sudoku_UI.Views
             ToolbarItems.Add(new ToolbarItem { IconImageSource = "icons8_share.png", Command = ShareSeedCommand });
         }
 
-        private async Task ShowBoard(int? seed = null)
+        private async Task ShowBoard()
         {
             IsBusy = true;
             
-            await InitBoard(seed);
+            await InitBoard();
 
             InitGrid();
 
@@ -370,7 +386,10 @@ namespace Sudoku_UI.Views
             int seed;
 
             if (int.TryParse(seedEntry.Text, out seed))
-                await ShowBoard(seed);
+            {
+                _seed = seed;
+                await ShowBoard();
+            }
             else
                 await ShowBoard();
 

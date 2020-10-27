@@ -5,7 +5,6 @@
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
-		<integer>2</integer>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -35,6 +34,19 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>CFBundleVersion</key>
-	<string>11</string>
+	<string>12.2</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Seed</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sudokuapp</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 </dict>
 </plist>

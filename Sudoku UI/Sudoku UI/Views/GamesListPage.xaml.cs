@@ -39,11 +39,11 @@ namespace Sudoku_UI.Views
 
             if (menuItem.Solved)
             {
-                await Share.RequestAsync($"I finished a timed sudoku puzzle seed {menuItem.Seed} in {menuItem.Time}, can you beat that?");
+                await Share.RequestAsync($"I finished this sudoku puzzle https://playsudoku.app/seed/{menuItem.Seed} in {menuItem.Time}, can you beat that?");
             }
             else
             {
-                await Share.RequestAsync($"Try this timed sudoku puzzle seed {menuItem.Seed}");
+                await Share.RequestAsync($"I tried this sudoku puzzle https://playsudoku.app/seed/{menuItem.Seed}");
             }
         }
 

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>6f465e43-442a-4a16-a8e8-ae25ff00607f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include=".well-known\apple-app-site-association.json" />
+    <Content Include=".well-known\assetlinks.json" />
+  </ItemGroup>
+
+
+</Project>
