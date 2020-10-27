@@ -28,7 +28,7 @@
             
             <RelativeLayout VerticalOptions="Start">
                 <Label Text="{Binding Timer}" HorizontalOptions="Center" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"></Label>
-                <Label Text="{Binding Seed, StringFormat='Seed is {0}'}"  RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"></Label>
+                <Label Text="{Binding DisplaySeed, StringFormat='Seed is {0}'}"  RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"></Label>
             </RelativeLayout>
 
             <Grid VerticalOptions="Start" x:Name="grid" ColumnSpacing="1" RowSpacing="1" >

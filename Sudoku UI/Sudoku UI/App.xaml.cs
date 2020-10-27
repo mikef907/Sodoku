@@ -30,7 +30,7 @@ namespace Sudoku_UI
         {
         }
 
-        protected override void OnAppLinkRequestReceived(Uri uri)
+        protected async override void OnAppLinkRequestReceived(Uri uri)
         {
             if (uri.Host.EndsWith("playsudoku.app", StringComparison.OrdinalIgnoreCase))
             {
@@ -47,17 +47,12 @@ namespace Sudoku_UI
 
                             if (!string.IsNullOrEmpty(val) && int.TryParse(val, out seed))
                             {
-                                MainPage.Navigation.PushAsync(new SudokuPage(seed));
-                                //Device.BeginInvokeOnMainThread(async () =>
-                                //{
-                                //    await Current.MainPage.DisplayAlert("hello", val.Replace("&", " "), "ok");
-                                //});
+                                await Shell.Current.GoToAsync($"//SudokuPage?seed={seed}");
                             }
 
                             break;
 
                         default:
-                            Xamarin.Forms.Device.OpenUri(uri);
                             break;
                     }
                 }
