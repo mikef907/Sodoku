@@ -40,8 +40,8 @@ namespace SudokuWeb
             }
 
             var options = new RewriteOptions()
-                .AddRewrite(@"^.well-known/apple-app-site-association", ".well-known/apple-app-site-association.json",
-                    skipRemainingRules: true);
+                .AddRewrite(@"^.well-known/apple-app-site-association", ".well-known/apple-app-site-association.json", skipRemainingRules: true)
+                .AddRewrite(@"^privacy-policy", "privacy-policy.html", skipRemainingRules: true);
 
             app.UseRewriter(options);
             
