@@ -41,9 +41,11 @@ namespace SudokuWeb
 
             var options = new RewriteOptions()
                 .AddRewrite(@"^.well-known/apple-app-site-association", ".well-known/apple-app-site-association.json", skipRemainingRules: true)
-                .AddRewrite(@"^privacy-policy", "privacy-policy.html", skipRemainingRules: true);
+                .AddRewrite(@"^seed(.*)", "index.html", skipRemainingRules: true);
 
             app.UseRewriter(options);
+
+            app.UseFileServer();
             
             app.UseHttpsRedirection();
 
@@ -54,13 +56,20 @@ namespace SudokuWeb
                 RequestPath = "/.well-known"
             });
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "static")),
+                RequestPath = "/static"
+            });
+
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
